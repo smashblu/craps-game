@@ -1,5 +1,4 @@
 function startGame() {
-    let playerNum = 0;
     betAmount = prompt(`How much to bet? ${playerMoney} available: `);
     if (betAmount > playerMoney) {
         console.log('Not enough available');
@@ -60,6 +59,7 @@ function getRandomInt(min, max) {
 }
 let playerMoney = 100;
 let pointOpen = false;
+let playerNum = 0;
 let betAmount = 0
 let play = 'n';
 play = prompt('Start game? [y/n]: ');
