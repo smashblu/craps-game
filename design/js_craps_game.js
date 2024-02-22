@@ -1,50 +1,55 @@
+function askToPlay() {
+    if (playerMoney === 0) {
+        console.log('You are out of money')
+        return false;
+    }
+    let play = prompt('Start game? [y/n]: ');
+    if (play === 'y' || play === 'Y') {
+        return true;
+    }
+    return false;
+}
 function startGame() {
-    betAmount = prompt(`How much to bet? ${playerMoney} available: `);
-    if (betAmount > playerMoney) {
-        console.log('Not enough available');
-        play = prompt('Start game? [y/n]: ');
+    betAmount = 'nan';
+    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
+        betAmount = prompt(`How much to bet? ${playerMoney} available: `);
+        if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
+            console.log('Please insert valid bet');
+        }
+    }
+    playerMoney = playerMoney - betAmount;
+    rollDice();
+    if (playerNum === 7 || playerNum === 11) {
+        console.log('You win');
+        playerMoney = playerMoney + (betAmount * 2);
+        playGame = askToPlay();
         return;
     }
-    else {
-        playerMoney = playerMoney - betAmount;
+    if (playerNum === 2 || playerNum === 3 || playerNum === 12) {
+        console.log('You lose');
+        playGame = askToPlay();
+        return;
+    }
+    pointNum = playerNum;
+    pointOpen = true;
+    while (pointOpen = true) {
+        console.log(`Your point is ${pointNum}`);
         rollDice();
-        // playerNum = 6;
-        if (playerNum === 7 || playerNum === 11) {
+        if (playerNum === 7) {
+            console.log('You lose');
+            pointOpen = false
+            playGame = askToPlay();
+            return;
+        }
+        if (playerNum === pointNum) {
             console.log('You win');
             playerMoney = playerMoney + (betAmount * 2);
-            play = prompt('Start game? [y/n]: ');
-            return;
-        }
-        else if (playerNum === 2 || playerNum === 3 || playerNum === 12) {
-            console.log('You lose');
-            play = prompt('Start game? [y/n]: ');
-            return;
-        }
-        else {
-            pointNum = playerNum;
-            pointOpen = true;
-            while (pointOpen = true) {
-                console.log(`Your point is ${pointNum}`);
-                rollDice();
-                // playerNum = 6
-                if (playerNum === 7) {
-                    console.log('You lose');
-                    pointOpen = false
-                    play = prompt('Start game? [y/n]: ');
-                    return;
-                }
-                else if (playerNum === pointNum) {
-                    console.log('You win');
-                    playerMoney = playerMoney + (betAmount * 2);
-                    pointOpen = false
-                    play = prompt('Start game? [y/n]: ');
-                    return;
-                }
-            }
+            pointOpen = false
+            playGame = askToPlay();
             return;
         }
     }
-    play = prompt('Start game? [y/n]: ');
+    return;
 }
 function rollDice() {
     let dieOne = getRandomInt(1,7);
@@ -60,10 +65,10 @@ function getRandomInt(min, max) {
 let playerMoney = 100;
 let pointOpen = false;
 let playerNum = 0;
-let betAmount = 0
-let play = 'n';
-play = prompt('Start game? [y/n]: ');
-while (play === 'y' || play === 'Y') {
+let betAmount = 'nan';
+let playGame = false;
+playGame = askToPlay();
+while (playGame === true) {
     startGame();
 }
 console.log('Goodbye');

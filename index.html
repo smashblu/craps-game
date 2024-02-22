@@ -22,16 +22,7 @@
             <area shape"rect" coords="943,15,1150,369" alt="numNine" onclick="boardClick(9)">
             <area shape"rect" coords="1164,15,1398,369" alt="numTen" onclick="boardClick(10)">
         </map>
-        <p><button type="button" onclick="diceroll()">Roll</button> Last Roll: <a id="show-roll"></a> <button type="button">Bet</button> <label for="bet-amount">Amount: </label>
-            <select name="bet-amount" id="bet-amount">
-                <option value="bet-one">$1</option>
-                <option value="bet-five">$5</option>
-                <option value="bet-ten">$10</option>
-                <option value="bet-25">$25</option>
-                <option value="bet-50">$50</option>
-                <option value="bet-100">$100</option>
-                <option value="bet-500">$500</option>
-            </select> Click num: <a id="clickNum"></a></p>
+        <p><button type="button" id="rollbutton">Roll</button> Last Roll: <a id="show-roll"></a> <button type="button">Bet</button> <label for="bet-amount">Amount: <input type="number" name="bet-amount" id="betamount" min=1></label> Click num: <a id="clickNum"></a></p>
     </div>
     <div class="footer" id="footer">
         <table id="site-map">
