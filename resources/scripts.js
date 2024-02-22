@@ -1,5 +1,4 @@
-function diceRoll(e) {
-    console.log('rolled', e.target.textContent);
+function diceRoll() {
     let dieOne = getRandomInt(1,7); 
     let dieTwo = getRandomInt(1,7); 
     playerRoll = dieOne + dieTwo;
@@ -15,6 +14,7 @@ function boardClick(num) {
 }
 let playerMoney = 100;
 let playerRoll = 0;
-document.getElementById('rollbutton').addEventListener('click', diceRoll);
-const maxBetInput = document.querySelector('betamount');
+const rollDiceButton = document.getElementById('rollbutton')
+const maxBetInput = document.querySelector('.betamount');
+rollDiceButton.addEventListener('click', diceRoll);
 maxBetInput.setAttribute('max', playerMoney);
