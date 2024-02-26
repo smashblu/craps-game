@@ -1,6 +1,6 @@
 function askToPlay() {
     if (playerMoney === 0) {
-     // Conver to "Game Over" type screen with option to start new game
+     // Convert to "Game Over" type screen with option to start new game
      // console.log('You are out of money')
         return false;
     }
@@ -20,7 +20,7 @@ function startGame() {
         }
     }
     playerMoney = playerMoney - betAmount;
-    rollDice();
+    diceRoll();
     if (playerNum === 7 || playerNum === 11) {
         console.log('You win'); // Pop-up rather than console.log
         playerMoney = playerMoney + (betAmount * 2);
@@ -36,7 +36,7 @@ function startGame() {
     pointOpen = true;
     while (pointOpen = true) {
         console.log(`Your point is ${pointNum}`);
-        rollDice();
+        diceRoll();
         if (playerNum === 7) {
             console.log('You lose'); // Pop-up rather than console.log
             pointOpen = false
