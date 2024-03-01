@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <title>Browser Craps</title>
 <link rel="stylesheet" href="resources/styles.css">
-<script src="resources/scripts.js"></script>
+<script src="resources/scripts.js" defer></script>
 </head>
 </html>
 <body>
@@ -25,13 +25,13 @@
     <div class="gameboard">
         <p>Money:</p>
         <img src="images/numbers.png" alt="Craps Board" usemap="#boardmap">
-        <map name=boardmap>
-            <area shape"rect" coords="15,15,229,369" alt="numFour" onclick="boardClick(4)">
-            <area shape"rect" coords="244,15,464,369" alt="numFive" onclick="boardClick(5)">
-            <area shape"rect" coords="478,15,690,369" alt="numSix" onclick="boardClick(6)">
-            <area shape"rect" coords="705,15,929,369" alt="numEight" onclick="boardClick(8)">
-            <area shape"rect" coords="943,15,1150,369" alt="numNine" onclick="boardClick(9)">
-            <area shape"rect" coords="1164,15,1398,369" alt="numTen" onclick="boardClick(10)">
+        <map name="boardmap" class="boardmap">
+            <area shape"rect" coords="15,15,229,369" alt="4"> 
+            <area shape"rect" coords="244,15,464,369" alt="5">
+            <area shape"rect" coords="478,15,690,369" alt="numSix">
+            <area shape"rect" coords="705,15,929,369" alt="numEight">
+            <area shape"rect" coords="943,15,1150,369" alt="numNine">
+            <area shape"rect" coords="1164,15,1398,369" alt="numTen">
         </map>
         <p><button type="button" id="roll-button">Roll</button> Last Roll: <a id="show-roll"></a> <button type="button">Bet</button> <label for="bet-amount">Amount: <input type="number" name="bet-amount" class="betamount" min=1></label> Click num: <a id="clickNum"></a></p>
     </div>
