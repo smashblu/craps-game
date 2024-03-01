@@ -26,7 +26,7 @@
         <h2></h2><img src="images/logo.png"> Browser Craps</h2>
     </div>
     <div class="gameboard">
-        <p>Money:</p>
+        <p>Money: <a id="player-money"></a></p>
         <img src="images/numbers.png" alt="Craps Board" usemap="#boardmap">
         <map name="boardmap" class="boardmap">
             <area shape"rect" coords="15,15,229,369" alt="4"> 
@@ -36,7 +36,12 @@
             <area shape"rect" coords="943,15,1150,369" alt="9">
             <area shape"rect" coords="1164,15,1398,369" alt="10">
         </map>
-        <p><button type="button" id="roll-button">Roll</button> Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button">Bet</button> <label for="bet-amount">Amount: <input type="number" name="bet-amount" class="betamount" min=1></label> Click num: <a id="clickNum"></a></p>
+        <p>
+            <button type="button" id="roll-button">Roll</button> 
+            Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button">Bet</button> 
+            <label for="bet-amount">Amount: <input type="number" id="bet-amount" min=1></label> 
+            Click num: <a id="clickNum"></a>
+        </p>
     </div>
     <div class="footer">
         <table id="site-map">

@@ -14,7 +14,9 @@ function askToPlay() {
 function startGame() {
     betAmount = 'nan';
     playGame = true;
-    console.log(playGame);
+    document.getElementById('bet-amount').disabled = false;
+    document.getElementById('bet-button').disabled = false;
+    document.querySelector('#bet-button').addEventListener('click', placeBet);
 /*    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
         // betAmount = prompt(`How much to bet? ${playerMoney} available: `); // Needs to not use "prompt" command, use "Bet" button
         document.querySelector('#bet-button').addEventListener('click', placeBet);
@@ -54,8 +56,8 @@ function startGame() {
             return;
         }
     }
-    return;
-} */
+    return; */
+}
 
 function diceRoll() {
     const dieOne = getRandomInt(1,7); 
@@ -72,9 +74,9 @@ function getRandomInt(min, max) {
 
 function placeBet(e) {
     if (playGame === true) {
-        // document.getElementByClassName("betamount");
-        betAmount = 20;
-        console.log(e, betAmount);
+        let i = document.getElementById('bet-amount').value;
+        document.getElementById('bet-amount').disabled = true;
+        document.getElementById('bet-button').disabled = true;
     }
     return;
 }
@@ -91,12 +93,11 @@ let playerNum = 0;
 let betAmount = 'nan';
 let playGame = false;
 
-let testVar = 1;
-
 const rollDiceButton = document.querySelector('#roll-button');
-const maxBetInput = document.querySelector('.betamount');
+const maxBetInput = document.querySelector('#bet-amount');
 const clickBoardNumber = document.querySelector('.boardmap');
 
+document.getElementById('player-money').innerHTML = playerMoney;
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 maxBetInput.setAttribute('max', playerMoney);
