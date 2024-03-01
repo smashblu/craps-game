@@ -13,8 +13,11 @@ function askToPlay() {
 
 function startGame() {
     betAmount = 'nan';
-    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-        betAmount = prompt(`How much to bet? ${playerMoney} available: `); // Needs to not use "prompt" command, use "Bet" button
+    playGame = true;
+    console.log(playGame);
+/*    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
+        // betAmount = prompt(`How much to bet? ${playerMoney} available: `); // Needs to not use "prompt" command, use "Bet" button
+        document.querySelector('#bet-button').addEventListener('click', placeBet);
         if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
             console.log('Please insert valid bet'); // Pop-up rather than console.log
         }
@@ -52,7 +55,7 @@ function startGame() {
         }
     }
     return;
-}
+} */
 
 function diceRoll() {
     const dieOne = getRandomInt(1,7); 
@@ -67,11 +70,18 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
 }
 
+function placeBet(e) {
+    if (playGame === true) {
+        // document.getElementByClassName("betamount");
+        betAmount = 20;
+        console.log(e, betAmount);
+    }
+    return;
+}
+
 function boardClick(e) {
     document.getElementById('clickNum').innerHTML = e.target.alt;
-    let i = Number(e.target.alt);
-    playerMoney += i;
-    console.log("Update", playerMoney)
+    let i = parseInt(e.target.alt);
 }
 
 let playerMoney = 100;
@@ -80,15 +90,19 @@ let pointOpen = false;
 let playerNum = 0;
 let betAmount = 'nan';
 let playGame = false;
+
+let testVar = 1;
+
 const rollDiceButton = document.querySelector('#roll-button');
-console.log("Test", playerMoney);
 const maxBetInput = document.querySelector('.betamount');
-rollDiceButton.addEventListener('click', diceRoll);
 const clickBoardNumber = document.querySelector('.boardmap');
+
+rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 maxBetInput.setAttribute('max', playerMoney);
 // Create line to invoke game, could be "New Game" button
 // playGame = askToPlay();
-while (playGame === true) {
-    startGame();
-}
+// while (playGame === true) {
+//    startGame();
+// }
+document.querySelector('#new-game').addEventListener('click', startGame);
