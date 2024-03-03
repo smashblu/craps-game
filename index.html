@@ -12,17 +12,14 @@
 </html>
 <body>
     <div class="header"> 
-        <table>
-            <tr>
-                <td><a><button type="button" id="new-game">New Game</button></a></td>
-            </tr>
-            <tr>
-                <td><a>Save Game</a></td>
-            </tr>
-            <tr>
-                <td><a>Load Game</a></td>
-            </tr>
-        </table>
+           <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Game Menu</button>
+                <ul class="dropdown-menu">
+                   <li><a class="dropdown-item" id="new-game">New Game</a></li> 
+                   <li><a class="dropdown-item" id="save-game">Save Game</a></li> 
+                   <li><a class="dropdown-item" id="load-game">Load Game</a></li> 
+                </ul>
+            </div>
         <h2></h2><img src="images/logo.png"> Browser Craps</h2>
     </div>
     <div class="gameboard">

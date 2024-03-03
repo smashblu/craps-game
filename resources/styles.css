@@ -9,7 +9,7 @@
     max-width: 5%;
 }
 
-.header table {
+.header .dropdown {
     float: right;
 }
 
