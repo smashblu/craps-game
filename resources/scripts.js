@@ -17,7 +17,14 @@ function startGame() {
     document.getElementById('bet-amount').disabled = false;
     document.getElementById('bet-button').disabled = false;
     document.querySelector('#bet-button').addEventListener('click', placeBet);
-    console.log('Got through loop');
+    const openRoll = new Promise((resolve, reject) => {
+        if (playerRoll === 7) {
+            resolve("Win");
+        } else {
+           reject("Test lose"); 
+        }
+    });
+    console.log(openRoll);
 /*    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
         // betAmount = prompt(`How much to bet? ${playerMoney} available: `); // Needs to not use "prompt" command, use "Bet" button
         document.querySelector('#bet-button').addEventListener('click', placeBet);
