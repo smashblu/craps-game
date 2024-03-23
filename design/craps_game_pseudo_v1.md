@@ -1,3 +1,4 @@
+```
 start
   set playerMoney to 100
   start game y/n
@@ -44,3 +45,4 @@ rollDice()
   add both numbers
   playerNum = sum of both numbers
 return
+```
