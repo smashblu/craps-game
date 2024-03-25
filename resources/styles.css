@@ -1,6 +1,6 @@
 .header {
     background-color: #ffffff;
-    overflow: hidden;
+    overflow: visible;
     margin: -10px;
     padding: 20px 20px;
 }

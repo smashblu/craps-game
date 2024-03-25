@@ -17,11 +17,8 @@ function startGame() {
     document.getElementById('bet-amount').disabled = false;
     document.getElementById('bet-button').disabled = false;
     document.querySelector('#bet-button').addEventListener('click', placeBet);
-    const openRoll = new Promise((resolve, reject) => {
-        if (playerRoll === 7) {
-            resolve("Win");
-        } else {
-           reject("Test lose"); 
+    const openRoll = new Promise(function(resolve, reject) {
+        if ()
         }
     });
     console.log(openRoll);
