@@ -1,4 +1,5 @@
 function newGame() {
+    playerMoney = 100;
     betAmount = null;
     playGame = true;
     document.getElementById('bet-amount').disabled = false;
@@ -58,6 +59,7 @@ function playerWin() {
     playerMoney += (betAmount * 2);
     pointOpen = false;
     betAmount = null;
+    maxBetInput.setAttribute('max', playerMoney);
     document.getElementById('player-money').innerHTML = playerMoney;
     document.getElementById('roll-button').disabled = true;
     document.getElementById('bet-amount').disabled = false;
@@ -72,6 +74,7 @@ function playerLose() {
     }
     pointOpen = false;
     betAmount = null;
+    maxBetInput.setAttribute('max', playerMoney);
     document.getElementById('player-money').innerHTML = playerMoney;
     document.getElementById('roll-button').disabled = true;
     document.getElementById('bet-amount').disabled = false;
@@ -88,12 +91,21 @@ function placeBet() {
         return;
     }
     playerMoney -= betAmount;
+    maxBetInput.setAttribute('max', playerMoney);
     document.getElementById('player-money').innerHTML = playerMoney;
     document.getElementById('bet-amount').disabled = true;
     document.getElementById('bet-button').disabled = true;
-    document.getElementById('player-money').innerHTML = playerMoney;
     document.getElementById('roll-button').disabled = false;
     return;
+}
+
+function gameOver() {
+    console.log(`You are bankrupt! Please choose "New Game" from the menu to play again`)
+    maxBetInput.setAttribute('max', playerMoney);
+    document.getElementById('player-money').innerHTML = playerMoney;
+    document.getElementById('roll-button').disabled = true;
+    document.getElementById('bet-amount').disabled = true;
+    document.getElementById('bet-button').disabled = true;
 }
 
 function boardClick(e) {

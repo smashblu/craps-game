@@ -21,13 +21,18 @@
 ### Version 2
 
 1. newGame()
+1. saveGame()
 1. loadGame()
-1. gameOver()
-1. placeBet()
 1. firstRoll()
 1. gameRoll()
+1. checkGameState()
 1. playerWin()
 1. playerLose()
+1. placeBet()
+1. gameOver()
+1. boardClick()
+1. diceRoll()
+1. getRandomInt()
 
 ## Pseudo Code
 
@@ -53,11 +58,12 @@ start
   when clicked betButton
     placeBet()
   when clicked rollButton
-    if pointOpen is false
-      firstRoll()
-    if pointOpen is true
-      gameRoll()
+      checkGameState()
 stop
+
+saveGame()
+  pop up "not enabled yet"
+return
 
 loadGame()
   pop up "not enabled yet"
@@ -66,7 +72,7 @@ return
 newGame()
   set playerMoney to 100
   set pointOpen to false
-  set betAmount to 'nan'
+  set betAmount to null
   enable betButton
 return
 
@@ -80,6 +86,13 @@ placeBet()
   update playerMoney
 return
 
+checkGameState()
+  if pointOpen is false
+    firstRoll()
+  if pointOpen is true
+    gameRoll()
+return
+
 firstRoll()
   diceRoll()
   output "You rolled $playerRoll"
@@ -88,7 +101,7 @@ firstRoll()
   if playerRoll is 2, 3, 12
     playerLose()
   if playerRoll is 4, 5, 6, 8, 9, 10
-    set playerPoint (AKA playerNum) to playerRoll
+    set playerPoint to playerRoll
     set pointOpen to true
     output "Your point is $playerPoint"
 return
@@ -96,7 +109,7 @@ return
 gameRoll()
   diceRoll()
   output "You rolled $playerRoll"
-  if playerRoll is playerPoint (AKA playerNum)
+  if playerRoll is playerPoint
     playerWin()
   if playerRoll is 7
     playerLose()
@@ -108,7 +121,7 @@ playerWin()
   output "You win"
   set playerMoney += betAmount
   set pointOpen to false
-  set betAmount to 'nan'
+  set betAmount to null
   disable rollButton
   enable betButton
 return
@@ -120,16 +133,13 @@ playerLose()
     gameOver()
   else
     set pointOpen to false
-    set betAmount to 'nan'
+    set betAmount to null
     disable rollButton
     enable betButton
 return
 
 gameOver()
-  if playerMoney > 0
-    return
-  else
-    disable buttons
+    disable all buttons
     output "Game over, you have no money"
 return
 ```
