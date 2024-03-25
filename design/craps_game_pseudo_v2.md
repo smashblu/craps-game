@@ -12,7 +12,6 @@
 ### Version 1
 
 1. askToPlay()
-    - 
 1. startGame()
 1. placeBet()
 1. boardClick()
@@ -51,8 +50,6 @@ start
     loadGame()
   when clicked "new game"
     newGame()
-  if playerMoney is 0
-    gameOver()
   when clicked betButton
     placeBet()
   when clicked rollButton
@@ -79,6 +76,8 @@ placeBet()
   set betAmount as number input
   disable bet button
   enable rollButton
+  deduct bet from playerMoney
+  update playerMoney
 return
 
 firstRoll()
@@ -117,9 +116,20 @@ return
 playerLose()
   output "You lose"
   set playerMoney -= betAmount
-  set pointOpen to false
-  set betAmount to 'nan'
-  disable rollButton
-  enable betButton
+  if playerMoney is 0
+    gameOver()
+  else
+    set pointOpen to false
+    set betAmount to 'nan'
+    disable rollButton
+    enable betButton
+return
+
+gameOver()
+  if playerMoney > 0
+    return
+  else
+    disable buttons
+    output "Game over, you have no money"
 return
 ```

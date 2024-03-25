@@ -1,81 +1,97 @@
-function askToPlay() {
-    if (playerMoney === 0) {
-     // Convert to "Game Over" type screen with option to start new game
-     // console.log('You are out of money')
-        return false;
-    }
-    let play = prompt('Start game? [y/n]: '); // Needs to not use "prompt" command, pop-up maybe?
-    if (play === 'y' || play === 'Y') { // This will need to be revamped with new user input
-        return true;
-    }
-    return false;
-}
-
-function startGame() {
-    betAmount = 'nan';
+function newGame() {
+    betAmount = null;
     playGame = true;
     document.getElementById('bet-amount').disabled = false;
     document.getElementById('bet-button').disabled = false;
     document.querySelector('#bet-button').addEventListener('click', placeBet);
-    const openRoll = new Promise(function(resolve, reject) {
-        if ()
-        }
-    });
-    console.log(openRoll);
-/*    while (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-        // betAmount = prompt(`How much to bet? ${playerMoney} available: `); // Needs to not use "prompt" command, use "Bet" button
-        document.querySelector('#bet-button').addEventListener('click', placeBet);
-        if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-            console.log('Please insert valid bet'); // Pop-up rather than console.log
-        }
-    }
-    playerMoney = playerMoney - betAmount;
-    diceRoll();
-    if (playerNum === 7 || playerNum === 11) {
-        console.log('You win'); // Pop-up rather than console.log
-        playerMoney = playerMoney + (betAmount * 2);
-        playGame = askToPlay();
-        return;
-    }
-    if (playerNum === 2 || playerNum === 3 || playerNum === 12) {
-        console.log('You lose'); // Pop-up rather than console.log
-        playGame = askToPlay();
-        return;
-    }
-    pointNum = playerNum;
-    pointOpen = true;
-    while (pointOpen = true) {
-        console.log(`Your point is ${pointNum}`);
-        diceRoll();
-        if (playerNum === 7) {
-            console.log('You lose'); // Pop-up rather than console.log
-            pointOpen = false
-            playGame = askToPlay();
-            return;
-        }
-        if (playerNum === pointNum) {
-            console.log('You win'); // Pop-up rather than console.log
-            playerMoney = playerMoney + (betAmount * 2);
-            pointOpen = false
-            playGame = askToPlay();
-            return;
-        }
-    }
-    return; */
 }
-function placeBet() {
-    if (playGame === true) {
-        betAmount = document.getElementById('bet-amount').value;
-        if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-            console.log('Please insert valid bet'); // Pop-up rather than console.log
-            betAmount = 'nan';
-            return;
-        }
-        playerMoney -= betAmount;
-        document.getElementById('bet-amount').disabled = true;
-        document.getElementById('bet-button').disabled = true;
-        document.getElementById('player-money').innerHTML = playerMoney;
+
+function saveGame() {
+    console.log('Not yet implemented') // Pop up: "Not yet implemented"
+}
+
+function loadGame() {
+    console.log('Not yet implemented') // Pop up: "Not yet implemented"
+}
+
+function firstRoll() {
+    diceRoll();
+    console.log(`You rolled ${playerRoll}`); // Make pop up
+    // Better way to check numbers, maybe 'switch'?
+    if (playerRoll === 7 || playerRoll === 11) {
+        playerWin();
+        return;
     }
+    if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
+        playerLose();
+        return;
+    }
+    playerPoint = playerRoll;
+    pointOpen = true;
+    console.log(`Your point is ${playerPoint}`); // Make pop up
+}
+
+function gameRoll() {
+    diceRoll();
+    console.log(`You rolled ${playerRoll}`); // Make pop up
+    if (playerRoll === playerPoint) {
+        playerWin();
+        return;
+    }
+    if (playerRoll === 7) {
+        playerLose();
+        return;
+    }
+    console.log("No action, roll again"); // Make pop up
+}
+
+function checkGameState() {
+    if (pointOpen === false) {
+       firstRoll(); 
+       return;
+    }
+    gameRoll();
+}
+
+function playerWin() {
+    console.log("You win!"); // Make pop up
+    playerMoney += (betAmount * 2);
+    pointOpen = false;
+    betAmount = null;
+    document.getElementById('player-money').innerHTML = playerMoney;
+    document.getElementById('roll-button').disabled = true;
+    document.getElementById('bet-amount').disabled = false;
+    document.getElementById('bet-button').disabled = false;
+}
+
+function playerLose() {
+    console.log("You lose") // Make pop up
+    if (playerMoney === 0) {
+        gameOver();
+        return;
+    }
+    pointOpen = false;
+    betAmount = null;
+    document.getElementById('player-money').innerHTML = playerMoney;
+    document.getElementById('roll-button').disabled = true;
+    document.getElementById('bet-amount').disabled = false;
+    document.getElementById('bet-button').disabled = false;
+}
+
+function placeBet() {
+    betAmount = document.getElementById('bet-amount').value;
+    // Make into function
+    // validateBet()
+    if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
+        console.log('Please insert valid bet'); // Pop-up rather than console.log
+        betAmount = null;
+        return;
+    }
+    playerMoney -= betAmount;
+    document.getElementById('player-money').innerHTML = playerMoney;
+    document.getElementById('bet-amount').disabled = true;
+    document.getElementById('bet-button').disabled = true;
+    document.getElementById('player-money').innerHTML = playerMoney;
     document.getElementById('roll-button').disabled = false;
     return;
 }
@@ -101,8 +117,8 @@ function getRandomInt(min, max) {
 let playerMoney = 100;
 let playerRoll = 0;
 let pointOpen = false;
-let playerNum = 0;
-let betAmount = 'nan';
+let playerPoint = 0;
+let betAmount = null;
 let playGame = false;
 
 const rollDiceButton = document.querySelector('#roll-button');
@@ -116,4 +132,7 @@ document.getElementById('player-money').innerHTML = playerMoney;
 document.getElementById('roll-button').disabled = true;
 document.getElementById('bet-amount').disabled = true;
 document.getElementById('bet-button').disabled = true;
-document.querySelector('#new-game').addEventListener('click', startGame);
+document.querySelector('#new-game').addEventListener('click', newGame);
+document.querySelector('#load-game').addEventListener('click', loadGame);
+document.querySelector('#save-game').addEventListener('click', saveGame);
+document.getElementById('roll-button').addEventListener('click', checkGameState);
