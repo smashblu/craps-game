@@ -2,18 +2,18 @@ function newGame() {
     playerMoney = 100;
     betAmount = null;
     playGame = true;
-    displayMessage(`New game started`);
+    displayMessage('New game started');
     document.getElementById('bet-amount').disabled = false;
     document.getElementById('bet-button').disabled = false;
     document.querySelector('#bet-button').addEventListener('click', placeBet);
 }
 
 function saveGame() {
-    displayMessage(`Saving not yet implemented`);
+    displayMessage('Saving not yet implemented');
 }
 
 function loadGame() {
-    displayMessage(`Loading not yet implemented`);
+    displayMessage('Loading not yet implemented');
 }
 
 function firstRoll() {
@@ -85,7 +85,7 @@ function playerLose() {
 function placeBet() {
     betAmount = document.getElementById('bet-amount').value;
     // Make into function
-    // validateBet()
+    // validateBet(b)
     if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
         displayMessage('Please insert valid bet');
         betAmount = null;
