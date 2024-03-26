@@ -20,3 +20,21 @@
 .gameboard, .about, .rules {
     background-color: #548347
 }
+
+.gameboard {
+    position: relative;
+}
+
+#on-button {
+    position: absolute;
+    width: 85px;
+    left: 85px;
+    top: 55px;
+}
+
+#off-button {
+    position: absolute;
+    width: 85px;
+    left: 1475px;
+    top: 55px;
+}    

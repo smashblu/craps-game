@@ -10,10 +10,14 @@ function newGame() {
 
 function saveGame() {
     displayMessage('Saving not yet implemented');
+    document.getElementById('off-button').style.visibility = 'hidden';
+    document.getElementById('on-button').style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
 }
 
 function loadGame() {
     displayMessage('Loading not yet implemented');
+    document.getElementById('off-button').style.visibility = 'visible';
+    document.getElementById('on-button').style.left = '85px';
 }
 
 function firstRoll() {
