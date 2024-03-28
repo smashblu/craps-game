@@ -30,6 +30,7 @@
     width: 85px;
     left: 85px;
     top: 55px;
+    transition: 1s;
 }
 
 #off-button {

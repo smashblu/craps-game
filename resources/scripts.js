@@ -1,10 +1,9 @@
 function newGame() {
     playerMoney = 100;
     betAmount = 0;
-    playGame = true;
+    buttonPosition(1);
     displayMessage('New game started');
     resetGame(false, true);
-    document.querySelector('#bet-button').addEventListener('click', placeBet);
 }
 
 function saveGame() {
@@ -51,6 +50,7 @@ function firstRoll() {
     }
     playerPoint = playerRoll;
     pointOpen = true;
+    buttonPosition(playerRoll);
     displayMessage(`Your point is ${playerPoint}`);
 }
 
@@ -76,10 +76,51 @@ function checkGameState() {
     gameRoll();
 }
 
+function buttonPosition(loc) {
+    switch (loc) {
+        case 1:
+            document.getElementById('off-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '1475px';
+            document.getElementById('on-button').style.visibility = 'hidden';
+            pointOpen = false;
+            break;
+        case 4:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '85px';
+            break;
+        case 5:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '315px';
+            break;
+        case 6:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '545px';
+            break;
+        case 8:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '775px';
+            break;
+        case 9:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '1005px';
+            break;
+        case 10:
+            document.getElementById('off-button').style.visibility = 'hidden';
+            document.getElementById('on-button').style.visibility = 'visible';
+            document.getElementById('on-button').style.left = '1235px';
+            break;
+    }
+}
+
 function playerWin() {
     displayMessage("You win!");
     playerMoney += (betAmount * 2);
-    pointOpen = false;
+    buttonPosition(1);
     betAmount = 0;
     resetGame(false, true);
 }
@@ -90,7 +131,7 @@ function playerLose() {
         gameOver();
         return;
     }
-    pointOpen = false;
+    buttonPosition(1);
     betAmount = 0;
     resetGame(false, true);
 }
@@ -107,6 +148,7 @@ function placeBet() {
 
 function gameOver() {
     displayMessage(`You are bankrupt! Please choose "New Game" from the menu to play again`);
+    buttonPosition(1);
     resetGame(false, false);
 }
 
@@ -148,7 +190,6 @@ let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
-let playGame = false;
 
 const rollDiceButton = document.querySelector('#roll-button');
 const maxBetInput = document.querySelector('#bet-amount');
@@ -157,8 +198,10 @@ const messageTrigger = document.getElementById('game-message');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
+buttonPosition(1);
 resetGame(false, false);
 document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
 document.getElementById('roll-button').addEventListener('click', checkGameState);
+document.querySelector('#bet-button').addEventListener('click', placeBet);
