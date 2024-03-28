@@ -1,10 +1,9 @@
 function newGame() {
     playerMoney = 100;
-    betAmount = null;
+    betAmount = 0;
     playGame = true;
     displayMessage('New game started');
-    document.getElementById('bet-amount').disabled = false;
-    document.getElementById('bet-button').disabled = false;
+    resetGame(false, true);
     document.querySelector('#bet-button').addEventListener('click', placeBet);
 }
 
@@ -20,10 +19,28 @@ function loadGame() {
     document.getElementById('on-button').style.left = '85px';
 }
 
+function resetGame(roll, bet) {
+    maxBetInput.setAttribute('max', playerMoney);
+    document.getElementById('player-money').innerHTML = playerMoney;
+    if (roll === true) {
+        document.getElementById('roll-button').disabled = false;
+    }
+    if (roll === false) {
+        document.getElementById('roll-button').disabled = true;
+    }
+    if (bet === true) {
+        document.getElementById('bet-amount').disabled = false;
+        document.getElementById('bet-button').disabled = false;
+    }
+    if (bet === false) {
+        document.getElementById('bet-amount').disabled = true;
+        document.getElementById('bet-button').disabled = true;
+    }
+}
+
 function firstRoll() {
     diceRoll();
     displayMessage(`You rolled ${playerRoll}`);
-    // Better way to check numbers, maybe 'switch'?
     if (playerRoll === 7 || playerRoll === 11) {
         playerWin();
         return;
@@ -63,12 +80,8 @@ function playerWin() {
     displayMessage("You win!");
     playerMoney += (betAmount * 2);
     pointOpen = false;
-    betAmount = null;
-    maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
-    document.getElementById('roll-button').disabled = true;
-    document.getElementById('bet-amount').disabled = false;
-    document.getElementById('bet-button').disabled = false;
+    betAmount = 0;
+    resetGame(false, true);
 }
 
 function playerLose() {
@@ -78,39 +91,23 @@ function playerLose() {
         return;
     }
     pointOpen = false;
-    betAmount = null;
-    maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
-    document.getElementById('roll-button').disabled = true;
-    document.getElementById('bet-amount').disabled = false;
-    document.getElementById('bet-button').disabled = false;
+    betAmount = 0;
+    resetGame(false, true);
 }
 
 function placeBet() {
     betAmount = document.getElementById('bet-amount').value;
-    // Make into function
-    // validateBet(b)
-    if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-        displayMessage('Please insert valid bet');
-        betAmount = null;
+    if (validateBet() === false) {
         return;
     }
     playerMoney -= betAmount;
-    maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
-    document.getElementById('bet-amount').disabled = true;
-    document.getElementById('bet-button').disabled = true;
-    document.getElementById('roll-button').disabled = false;
+    resetGame(true, false);
     return;
 }
 
 function gameOver() {
     displayMessage(`You are bankrupt! Please choose "New Game" from the menu to play again`);
-    maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
-    document.getElementById('roll-button').disabled = true;
-    document.getElementById('bet-amount').disabled = true;
-    document.getElementById('bet-button').disabled = true;
+    resetGame(false, false);
 }
 
 function displayMessage(str) {
@@ -122,7 +119,15 @@ function displayMessage(str) {
 function boardClick(e) { // To implement: advanced betting during game
     document.getElementById('clickNum').innerHTML = e.target.alt;
     let i = parseInt(e.target.alt);
-    console.log(i);
+}
+
+function validateBet() {
+    if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
+        displayMessage('Please insert valid bet');
+        betAmount = 0;
+        return false;
+    }
+    return true;
 }
 
 function diceRoll() {
@@ -142,7 +147,7 @@ let playerMoney = 100;
 let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
-let betAmount = null;
+let betAmount = 0;
 let playGame = false;
 
 const rollDiceButton = document.querySelector('#roll-button');
@@ -152,11 +157,7 @@ const messageTrigger = document.getElementById('game-message');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
-maxBetInput.setAttribute('max', playerMoney);
-document.getElementById('player-money').innerHTML = playerMoney;
-document.getElementById('roll-button').disabled = true;
-document.getElementById('bet-amount').disabled = true;
-document.getElementById('bet-button').disabled = true;
+resetGame(false, false);
 document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
