@@ -1,10 +1,41 @@
 .header {
     background-color: #ffffff;
-    overflow: hidden;
+    overflow: visible;
     margin: -10px;
     padding: 20px 20px;
+}
+
+.header img {
+    max-width: 5%;
+}
+
+.header .dropdown {
+    float: right;
+}
+
+.header a {
+    color: blue;
 }
 
 .gameboard, .about, .rules {
     background-color: #548347
 }
+
+.gameboard {
+    position: relative;
+}
+
+#on-button {
+    position: absolute;
+    width: 85px;
+    left: 85px;
+    top: 55px;
+    transition: 1s;
+}
+
+#off-button {
+    position: absolute;
+    width: 85px;
+    left: 1475px;
+    top: 55px;
+}    
