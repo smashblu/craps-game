@@ -3,7 +3,8 @@ function newGame() {
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
-    resetGame(false, true);
+    rollButtonState(false);
+    betButtonState(true);
 }
 
 function saveGame() {
@@ -18,23 +19,24 @@ function loadGame() {
     document.getElementById('on-button').style.left = '85px';
 }
 
-function resetGame(roll, bet) {
+function rollButtonState(enabled) {
+    if (enabled === true) {
+        document.getElementById('roll-button').disabled = false;
+        return;
+    }
+    document.getElementById('roll-button').disabled = true;
+}
+
+function betButtonState(enabled) {
     maxBetInput.setAttribute('max', playerMoney);
     document.getElementById('player-money').innerHTML = playerMoney;
-    if (roll === true) {
-        document.getElementById('roll-button').disabled = false;
-    }
-    if (roll === false) {
-        document.getElementById('roll-button').disabled = true;
-    }
-    if (bet === true) {
+    if (enabled === true) {
         document.getElementById('bet-amount').disabled = false;
         document.getElementById('bet-button').disabled = false;
+        return;
     }
-    if (bet === false) {
-        document.getElementById('bet-amount').disabled = true;
-        document.getElementById('bet-button').disabled = true;
-    }
+    document.getElementById('bet-amount').disabled = true;
+    document.getElementById('bet-button').disabled = true;
 }
 
 function firstRoll() {
@@ -122,7 +124,8 @@ function playerWin() {
     playerMoney += (betAmount * 2);
     buttonPosition(1);
     betAmount = 0;
-    resetGame(false, true);
+    rollButtonState(false);
+    betButtonState(true);
 }
 
 function playerLose() {
@@ -133,23 +136,27 @@ function playerLose() {
     }
     buttonPosition(1);
     betAmount = 0;
-    resetGame(false, true);
+    rollButtonState(false);
+    betButtonState(true);
 }
 
 function placeBet() {
     betAmount = document.getElementById('bet-amount').value;
+    betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
     }
     playerMoney -= betAmount;
-    resetGame(true, false);
+    rollButtonState(true);
+    betButtonState(false);
     return;
 }
 
 function gameOver() {
     displayMessage(`You are bankrupt! Please choose "New Game" from the menu to play again`);
     buttonPosition(1);
-    resetGame(false, false);
+    rollButtonState(false);
+    betButtonState(false);
 }
 
 function displayMessage(str) {
@@ -199,7 +206,8 @@ const messageTrigger = document.getElementById('game-message');
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
-resetGame(false, false);
+rollButtonState(false);
+betButtonState(false);
 document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
