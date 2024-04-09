@@ -39,3 +39,25 @@
     left: 1475px;
     top: 55px;
 }    
+
+.on-off-button {
+    position: absolute;
+    font-size: 32pt;
+    text-align: center;
+    left: 10%;
+    top: 12%;
+    height: 85px;
+    width: 85px;
+    background-color: #ffffff;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: #000000;
+    border-width: 5px;
+    display: inline-block;
+}
+
+.on-off-button span {
+    vertical-align: middle;
+    font-family: Garamond;
+    color: #000000;
+}
