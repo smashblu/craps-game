@@ -141,7 +141,7 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = document.getElementById('bet-amount').value;
+    betAmount = betDialogValue.value; 
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
@@ -202,6 +202,7 @@ const rollDiceButton = document.querySelector('#roll-button');
 const maxBetInput = document.querySelector('#bet-amount');
 const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
+const betDialogValue = document.getElementById('bet-amount');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
