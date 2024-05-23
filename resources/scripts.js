@@ -67,7 +67,7 @@ function gameRoll() {
         playerLose();
         return;
     }
-    displayMessage("No action, roll again");
+    displayMessage('No action, roll again');
 }
 
 function checkGameState() {
@@ -120,7 +120,7 @@ function buttonPosition(loc) {
 }
 
 function playerWin() {
-    displayMessage("You win!");
+    displayMessage('You win!');
     playerMoney += (betAmount * 2);
     buttonPosition(1);
     betAmount = 0;
@@ -129,7 +129,7 @@ function playerWin() {
 }
 
 function playerLose() {
-    displayMessage("You lose")
+    displayMessage('You lose')
     if (playerMoney === 0) {
         gameOver();
         return;
@@ -153,7 +153,7 @@ function placeBet() {
 }
 
 function gameOver() {
-    displayMessage(`You are bankrupt! Please choose "New Game" from the menu to play again`);
+    displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
     buttonPosition(1);
     rollButtonState(false);
     betButtonState(false);
