@@ -9,34 +9,34 @@ function newGame() {
 
 function saveGame() {
     displayMessage('Saving not yet implemented');
-    document.getElementById('off-button').style.visibility = 'hidden';
-    document.getElementById('on-button').style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
+    offStyle.style.visibility = 'hidden';
+    onStyle.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
 }
 
 function loadGame() {
     displayMessage('Loading not yet implemented');
-    document.getElementById('off-button').style.visibility = 'visible';
-    document.getElementById('on-button').style.left = '85px';
+    offStyle.style.visibility = 'visible';
+    onStyle.left = '85px';
 }
 
 function rollButtonState(enabled) {
     if (enabled === true) {
-        document.getElementById('roll-button').disabled = false;
+        rollElement.disabled = false;
         return;
     }
-    document.getElementById('roll-button').disabled = true;
+    rollElement.disabled = true;
 }
 
 function betButtonState(enabled) {
     maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
+    displayMoney = playerMoney;
     if (enabled === true) {
-        document.getElementById('bet-amount').disabled = false;
-        document.getElementById('bet-button').disabled = false;
+        betDialog.disabled = false;
+        displayBetButton = false;
         return;
     }
-    document.getElementById('bet-amount').disabled = true;
-    document.getElementById('bet-button').disabled = true;
+    betDialog.disabled = true;
+    displayBetButton = true;
 }
 
 function firstRoll() {
@@ -81,40 +81,40 @@ function checkGameState() {
 function buttonPosition(loc) {
     switch (loc) {
         case 1:
-            document.getElementById('off-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1475px';
-            document.getElementById('on-button').style.visibility = 'hidden';
+            offStyle.visibility = 'visible';
+            onStyle.visibility = 'hidden';
+            onStyle.left = '1475px';
             pointOpen = false;
             break;
         case 4:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '85px';
+            offStyle.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '85px';
             break;
         case 5:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '315px';
+            offStyle.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '315px';
             break;
         case 6:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '545px';
+            offStyle.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '545px';
             break;
         case 8:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '775px';
+            offStyle.style.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '775px';
             break;
         case 9:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1005px';
+            offStyle.style.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '1005px';
             break;
         case 10:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1235px';
+            offStyle.style.visibility = 'hidden';
+            onStyle.visibility = 'visible';
+            onStyle.left = '1235px';
             break;
     }
 }
@@ -141,7 +141,7 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = betDialogValue.value; 
+    betAmount = betDialog.value; 
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
@@ -198,11 +198,16 @@ let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 
+const displayMoney = document.getElementById('player-money').innerHTML;
 const rollDiceButton = document.querySelector('#roll-button');
+const rollElement = document.getElementById('roll-button');
 const maxBetInput = document.querySelector('#bet-amount');
+const betDialog = document.getElementById('bet-amount');
+const displayBetButton = document.getElementById('bet-button').disabled;
 const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
-const betDialogValue = document.getElementById('bet-amount');
+const onStyle = document.getElementById('on-button').style;
+const offStyle = document.getElementById('off-button').style;
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
@@ -212,5 +217,5 @@ betButtonState(false);
 document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-document.getElementById('roll-button').addEventListener('click', checkGameState);
+rollElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
