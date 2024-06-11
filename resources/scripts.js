@@ -1,3 +1,14 @@
+function firstGame() {
+    if (firstViewed === true) {
+        gameArea.style.display = 'inline';
+    }
+    else {
+        gameArea.style.display = 'none';
+    }
+    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('gamearea-popup'));
+    toastBootstrap.show();
+}
+
 function newGame() {
     playerMoney = 100;
     betAmount = 0;
@@ -102,17 +113,17 @@ function buttonPosition(loc) {
             onButton.style.left = '545px';
             break;
         case 8:
-            offButton.style.style.visibility = 'hidden';
+            offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
             onButton.style.left = '775px';
             break;
         case 9:
-            offButton.style.style.visibility = 'hidden';
+            offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
             onButton.style.left = '1005px';
             break;
         case 10:
-            offButton.style.style.visibility = 'hidden';
+            offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
             onButton.style.left = '1235px';
             break;
@@ -197,6 +208,7 @@ let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
+let firstViewed = true;
 
 const displayBetButton = document.getElementById('bet-button');
 const displayMoney = document.getElementById('player-money');
@@ -208,6 +220,7 @@ const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
+const gameArea = document.getElementById('gamearea');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
@@ -219,3 +232,4 @@ document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
 rollElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
+firstGame();

@@ -1,3 +1,18 @@
+#gamearea {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000000;
+  opacity: 0.5;
+  z-index: 3;
+}    
+
+#gamearea-popup {
+    z-index: 5;
+}
+
 .header {
     background-color: #ffffff;
     overflow: visible;
@@ -23,6 +38,7 @@
 
 .gameboard {
     position: relative;
+    z-index: 1;
 }
 
 #on-button {
@@ -38,26 +54,4 @@
     width: 85px;
     left: 1475px;
     top: 55px;
-}    
-
-.on-off-button {
-    position: absolute;
-    font-size: 32pt;
-    text-align: center;
-    left: 10%;
-    top: 12%;
-    height: 85px;
-    width: 85px;
-    background-color: #ffffff;
-    border-style: solid;
-    border-radius: 50%;
-    border-color: #000000;
-    border-width: 5px;
-    display: inline-block;
-}
-
-.on-off-button span {
-    vertical-align: middle;
-    font-family: Garamond;
-    color: #000000;
 }
