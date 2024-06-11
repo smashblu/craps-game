@@ -9,14 +9,14 @@ function newGame() {
 
 function saveGame() {
     displayMessage('Saving not yet implemented');
-    offStyle.style.visibility = 'hidden';
-    onStyle.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
+    offButton.style.visibility = 'hidden';
+    onButton.style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
 }
 
 function loadGame() {
     displayMessage('Loading not yet implemented');
-    offStyle.style.visibility = 'visible';
-    onStyle.left = '85px';
+    offButton.style.visibility = 'visible';
+    onButton.style.left = '85px';
 }
 
 function rollButtonState(enabled) {
@@ -29,14 +29,14 @@ function rollButtonState(enabled) {
 
 function betButtonState(enabled) {
     maxBetInput.setAttribute('max', playerMoney);
-    displayMoney = playerMoney;
+    displayMoney.innerHTML = playerMoney;
     if (enabled === true) {
         betDialog.disabled = false;
-        displayBetButton = false;
+        displayBetButton.disabled = false;
         return;
     }
     betDialog.disabled = true;
-    displayBetButton = true;
+    displayBetButton.disabled = true;
 }
 
 function firstRoll() {
@@ -81,40 +81,40 @@ function checkGameState() {
 function buttonPosition(loc) {
     switch (loc) {
         case 1:
-            offStyle.visibility = 'visible';
-            onStyle.visibility = 'hidden';
-            onStyle.left = '1475px';
+            offButton.style.visibility = 'visible';
+            onButton.style.visibility = 'hidden';
+            onButton.style.left = '1475px';
             pointOpen = false;
             break;
         case 4:
-            offStyle.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '85px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '85px';
             break;
         case 5:
-            offStyle.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '315px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '315px';
             break;
         case 6:
-            offStyle.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '545px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '545px';
             break;
         case 8:
-            offStyle.style.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '775px';
+            offButton.style.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '775px';
             break;
         case 9:
-            offStyle.style.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '1005px';
+            offButton.style.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '1005px';
             break;
         case 10:
-            offStyle.style.visibility = 'hidden';
-            onStyle.visibility = 'visible';
-            onStyle.left = '1235px';
+            offButton.style.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '1235px';
             break;
     }
 }
@@ -198,16 +198,16 @@ let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 
-const displayMoney = document.getElementById('player-money').innerHTML;
+const displayBetButton = document.getElementById('bet-button');
+const displayMoney = document.getElementById('player-money');
 const rollDiceButton = document.querySelector('#roll-button');
 const rollElement = document.getElementById('roll-button');
 const maxBetInput = document.querySelector('#bet-amount');
 const betDialog = document.getElementById('bet-amount');
-const displayBetButton = document.getElementById('bet-button').disabled;
 const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
-const onStyle = document.getElementById('on-button').style;
-const offStyle = document.getElementById('off-button').style;
+const onButton = document.getElementById('on-button');
+const offButton = document.getElementById('off-button');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
