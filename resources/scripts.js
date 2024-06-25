@@ -152,7 +152,7 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = betDialog.value; 
+    betAmount = betDialog.value;
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
