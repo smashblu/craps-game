@@ -10,7 +10,10 @@ function firstGame() {
 }
 
 function newGame() {
+    firstViewed = false;
+    gameArea.style.display = 'none';
     playerMoney = 100;
+    displayMoney.innerHTML = playerMoney;
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -133,6 +136,7 @@ function buttonPosition(loc) {
 function playerWin() {
     displayMessage('You win!');
     playerMoney += (betAmount * 2);
+    displayMoney.innerHTML = playerMoney;
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -158,6 +162,7 @@ function placeBet() {
         return;
     }
     playerMoney -= betAmount;
+    displayMoney.innerHTML = playerMoney;
     rollButtonState(true);
     betButtonState(false);
     return;
@@ -227,6 +232,7 @@ clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
+document.querySelector('#first-new-game').addEventListener('click', newGame);
 document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
