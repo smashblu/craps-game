@@ -1,17 +1,11 @@
 function firstGame() {
     if (firstViewed === true) {
-        gameArea.style.display = 'inline';
+        firstScreenFade.show();
     }
-    else {
-        gameArea.style.display = 'none';
-    }
-    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('gamearea-popup'));
-    toastBootstrap.show();
 }
 
 function newGame() {
     firstViewed = false;
-    gameArea.style.display = 'none';
     playerMoney = 100;
     displayMoney.innerHTML = playerMoney;
     betAmount = 0;
@@ -225,7 +219,7 @@ const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
-const gameArea = document.getElementById('gamearea');
+const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);

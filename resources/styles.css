@@ -1,18 +1,3 @@
-#gamearea {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #000000;
-  opacity: 0.5;
-  z-index: 3;
-}    
-
-#gamearea-popup {
-    z-index: 5;
-}
-
 .header {
     background-color: #ffffff;
     overflow: visible;
