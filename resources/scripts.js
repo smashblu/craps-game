@@ -220,16 +220,20 @@ const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
+const newGameButtons = document.querySelectorAll('.new-game');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
-document.querySelector('#first-new-game').addEventListener('click', newGame);
-document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
 rollElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
+
+for (let i = 0; i < newGameButtons.length; i++) {
+    newGameButtons[i].addEventListener('click', newGame);
+}
+
 firstGame();
