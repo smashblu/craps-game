@@ -1,5 +1,13 @@
+function firstGame() {
+    if (firstViewed === true) {
+        firstScreenFade.show();
+    }
+}
+
 function newGame() {
+    firstViewed = false;
     playerMoney = 100;
+    displayMoney.innerHTML = playerMoney;
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -9,34 +17,34 @@ function newGame() {
 
 function saveGame() {
     displayMessage('Saving not yet implemented');
-    document.getElementById('off-button').style.visibility = 'hidden';
-    document.getElementById('on-button').style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
+    offButton.style.visibility = 'hidden';
+    onButton.style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
 }
 
 function loadGame() {
     displayMessage('Loading not yet implemented');
-    document.getElementById('off-button').style.visibility = 'visible';
-    document.getElementById('on-button').style.left = '85px';
+    offButton.style.visibility = 'visible';
+    onButton.style.left = '85px';
 }
 
 function rollButtonState(enabled) {
     if (enabled === true) {
-        document.getElementById('roll-button').disabled = false;
+        rollElement.disabled = false;
         return;
     }
-    document.getElementById('roll-button').disabled = true;
+    rollElement.disabled = true;
 }
 
 function betButtonState(enabled) {
     maxBetInput.setAttribute('max', playerMoney);
-    document.getElementById('player-money').innerHTML = playerMoney;
+    displayMoney.innerHTML = playerMoney;
     if (enabled === true) {
-        document.getElementById('bet-amount').disabled = false;
-        document.getElementById('bet-button').disabled = false;
+        betDialog.disabled = false;
+        displayBetButton.disabled = false;
         return;
     }
-    document.getElementById('bet-amount').disabled = true;
-    document.getElementById('bet-button').disabled = true;
+    betDialog.disabled = true;
+    displayBetButton.disabled = true;
 }
 
 function firstRoll() {
@@ -67,7 +75,7 @@ function gameRoll() {
         playerLose();
         return;
     }
-    displayMessage("No action, roll again");
+    displayMessage('No action, roll again');
 }
 
 function checkGameState() {
@@ -81,47 +89,48 @@ function checkGameState() {
 function buttonPosition(loc) {
     switch (loc) {
         case 1:
-            document.getElementById('off-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1475px';
-            document.getElementById('on-button').style.visibility = 'hidden';
+            offButton.style.visibility = 'visible';
+            onButton.style.visibility = 'hidden';
+            onButton.style.left = '1475px';
             pointOpen = false;
             break;
         case 4:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '85px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '85px';
             break;
         case 5:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '315px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '315px';
             break;
         case 6:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '545px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '545px';
             break;
         case 8:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '775px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '775px';
             break;
         case 9:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1005px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '1005px';
             break;
         case 10:
-            document.getElementById('off-button').style.visibility = 'hidden';
-            document.getElementById('on-button').style.visibility = 'visible';
-            document.getElementById('on-button').style.left = '1235px';
+            offButton.style.visibility = 'hidden';
+            onButton.style.visibility = 'visible';
+            onButton.style.left = '1235px';
             break;
     }
 }
 
 function playerWin() {
-    displayMessage("You win!");
+    displayMessage('You win!');
     playerMoney += (betAmount * 2);
+    displayMoney.innerHTML = playerMoney;
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -129,7 +138,7 @@ function playerWin() {
 }
 
 function playerLose() {
-    displayMessage("You lose")
+    displayMessage('You lose')
     if (playerMoney === 0) {
         gameOver();
         return;
@@ -141,19 +150,20 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = document.getElementById('bet-amount').value;
+    betAmount = betDialog.value;
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
     }
     playerMoney -= betAmount;
+    displayMoney.innerHTML = playerMoney;
     rollButtonState(true);
     betButtonState(false);
     return;
 }
 
 function gameOver() {
-    displayMessage(`You are bankrupt! Please choose "New Game" from the menu to play again`);
+    displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
     buttonPosition(1);
     rollButtonState(false);
     betButtonState(false);
@@ -197,19 +207,33 @@ let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
+let firstViewed = true;
 
+const displayBetButton = document.getElementById('bet-button');
+const displayMoney = document.getElementById('player-money');
 const rollDiceButton = document.querySelector('#roll-button');
+const rollElement = document.getElementById('roll-button');
 const maxBetInput = document.querySelector('#bet-amount');
+const betDialog = document.getElementById('bet-amount');
 const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
+const onButton = document.getElementById('on-button');
+const offButton = document.getElementById('off-button');
+const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
+const newGameButtons = document.querySelectorAll('.new-game');
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
-document.querySelector('#new-game').addEventListener('click', newGame);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-document.getElementById('roll-button').addEventListener('click', checkGameState);
+rollElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
+
+for (let i = 0; i < newGameButtons.length; i++) {
+    newGameButtons[i].addEventListener('click', newGame);
+}
+
+firstGame();
