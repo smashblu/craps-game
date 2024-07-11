@@ -44,8 +44,8 @@
         <p>Money: <a id="player-money"></a></p>
         <img src="images/numbers.png" alt="Craps Board" usemap="#boardmap">
         <map name="boardmap" class="boardmap">
-            <area shape"rect" coords="15,15,229,369" alt="4"> 
-            <area shape"rect" coords="244,15,464,369" alt="5">
+            <area shape"rect" coords="15,15,229,369" alt="4" data-bs-toggle="tooltip" data-bs-title="Four"> 
+            <area shape"rect" coords="244,15,464,369" alt="5" data-bs-toggle="tooltip" data-bs-title="Five">
             <area shape"rect" coords="478,15,690,369" alt="6">
             <area shape"rect" coords="705,15,929,369" alt="8">
             <area shape"rect" coords="943,15,1150,369" alt="9">
@@ -55,7 +55,7 @@
         <img src="images/off_button.png" id="off-button" alt="OFF Button">
         <p>
             <button type="button" id="roll-button">Roll</button> 
-            Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button">Bet</button> 
+            Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button" data-bs-toggle="tooltip" data-bs-title="Test">Bet</button> 
             <label for="bet-amount">Amount: <input type="number" id="bet-amount" min=1></label> 
             Click num: <a id="clickNum"></a>
         </p>

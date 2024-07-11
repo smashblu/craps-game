@@ -221,6 +221,8 @@ const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 const newGameButtons = document.querySelectorAll('.new-game');
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
