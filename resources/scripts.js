@@ -80,8 +80,8 @@ function gameRoll() {
 
 function checkGameState() {
     if (pointOpen === false) {
-       firstRoll(); 
-       return;
+        firstRoll();
+        return;
     }
     gameRoll();
 }
@@ -169,6 +169,10 @@ function gameOver() {
     betButtonState(false);
 }
 
+function displayToolTip(str, item) {
+
+}
+
 function displayMessage(str) {
     document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
@@ -190,16 +194,16 @@ function validateBet() {
 }
 
 function diceRoll() {
-    const dieOne = getRandomInt(1,7); 
-    const dieTwo = getRandomInt(1,7); 
+    const dieOne = getRandomInt(1, 7);
+    const dieTwo = getRandomInt(1, 7);
     playerRoll = dieOne + dieTwo;
     document.getElementById('show-roll').innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
 }
 
 function getRandomInt(min, max) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
 }
 
 let playerMoney = 100;
