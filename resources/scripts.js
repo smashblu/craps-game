@@ -169,8 +169,9 @@ function gameOver() {
     betButtonState(false);
 }
 
-function displayToolTip(str, item) {
-
+function displayToolTip(e, str) {
+    console.log('Moused over', e, str);
+    // document.getElementById(item).setAttribute('data-bs-title', str);
 }
 
 function displayMessage(str) {
@@ -227,9 +228,11 @@ const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-po
 const newGameButtons = document.querySelectorAll('.new-game');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+console.log(tooltipList);
 
 rollDiceButton.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
+document.querySelector('.gameboard').addEventListener('mouseover', (e) => displayToolTip(e, 'TestStr', 'TestItem'));
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
