@@ -29,22 +29,26 @@ function loadGame() {
 
 function rollButtonState(enabled) {
     if (enabled === true) {
-        rollElement.disabled = false;
+        rollButtonElement.disabled = false;
         return;
     }
-    rollElement.disabled = true;
+    rollButtonElement.disabled = true;
 }
 
 function betButtonState(enabled) {
-    maxBetInput.setAttribute('max', playerMoney);
+    betDialogElement.setAttribute('max', playerMoney);
     displayMoney.innerHTML = playerMoney;
     if (enabled === true) {
-        betDialog.disabled = false;
-        displayBetButton.disabled = false;
+        betDialogElement.disabled = false;
+        betButtonElement.disabled = false;
+        betButtonElement.setAttribute('data-bs-toggle', 'tooltip');
+        betButtonElement.setAttribute('data-bs-title', 'Bet Button Enabled');
         return;
     }
-    betDialog.disabled = true;
-    displayBetButton.disabled = true;
+    betDialogElement.disabled = true;
+    betButtonElement.disabled = true;
+    betButtonElement.setAttribute('data-bs-toggle', 'tooltip');
+    betButtonElement.setAttribute('data-bs-title', 'Bet Button Disabled');
 }
 
 function firstRoll() {
@@ -150,7 +154,7 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = betDialog.value;
+    betAmount = betDialogElement.value;
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
@@ -169,10 +173,10 @@ function gameOver() {
     betButtonState(false);
 }
 
-function displayToolTip(e, str) {
-    console.log('Moused over', e, str);
-    // document.getElementById(item).setAttribute('data-bs-title', str);
-}
+// function displayToolTip(e, str) {
+// console.log('Moused over', e, str);
+// document.getElementById(item).setAttribute('data-bs-title', str);
+// }
 
 function displayMessage(str) {
     document.getElementById('current-message').innerHTML = str;
@@ -214,12 +218,10 @@ let playerPoint = 0;
 let betAmount = 0;
 let firstViewed = true;
 
-const displayBetButton = document.getElementById('bet-button');
 const displayMoney = document.getElementById('player-money');
-const rollDiceButton = document.querySelector('#roll-button');
-const rollElement = document.getElementById('roll-button');
-const maxBetInput = document.querySelector('#bet-amount');
-const betDialog = document.getElementById('bet-amount');
+const betButtonElement = document.getElementById('bet-button');
+const rollButtonElement = document.getElementById('roll-button');
+const betDialogElement = document.getElementById('bet-amount');
 const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
@@ -228,21 +230,21 @@ const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-po
 const newGameButtons = document.querySelectorAll('.new-game');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-console.log(tooltipList);
 
-rollDiceButton.addEventListener('click', diceRoll);
+rollButtonElement.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
-document.querySelector('.gameboard').addEventListener('mouseover', (e) => displayToolTip(e, 'TestStr', 'TestItem'));
+// document.querySelector('.gameboard').addEventListener('mouseover', (e) => displayToolTip(e, 'TestStr', 'TestItem'));
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-rollElement.addEventListener('click', checkGameState);
+rollButtonElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
 
 for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
 }
 
+console.log(tooltipTriggerList);
 firstGame();
