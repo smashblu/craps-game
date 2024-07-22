@@ -39,7 +39,8 @@
         <div class="dropdown">
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Game Menu</button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item new-game">New Game</a></li>
+                <li><a class="dropdown-item new-game" data-bs-toggle="tooltip"
+                        data-bs-title="Start a new game, reset money to $100">New Game</a></li>
                 <li><a class="dropdown-item" id="save-game">Save Game</a></li>
                 <li><a class="dropdown-item" id="load-game">Load Game</a></li>
             </ul>
@@ -47,7 +48,9 @@
         <h2></h2><img src="images/logo.png"> Browser Craps</h2>
     </div>
     <div class="gameboard">
-        <p>Money: <a id="player-money"></a></p>
+        <p><a class="player-money-display">Money: $</a><a class="player-money-display" id="player-money"
+                data-bs-toggle="tooltip" data-bs-title="Current money available for bets"></a>
+        </p>
         <img src="images/numbers.png" alt="Craps Board" usemap="#boardmap">
         <map name="boardmap" class="boardmap">
             <area shape"rect" coords="15,15,229,369" alt="4" data-bs-toggle="tooltip" data-bs-title="Four">
@@ -57,12 +60,17 @@
             <area shape"rect" coords="943,15,1150,369" alt="9">
             <area shape"rect" coords="1164,15,1398,369" alt="10">
         </map>
-        <img src="images/on_button.png" id="on-button" alt="ON Button">
-        <img src="images/off_button.png" id="off-button" alt="OFF Button">
+        <img src="images/on_button.png" id="on-button" alt="ON Button" data-bs-toggle="tooltip"
+            data-bs-title="ON button indicating the current point that will win when rolled">
+        <img src="images/off_button.png" id="off-button" alt="OFF Button" data-bs-toggle="tooltip"
+            data-bs-title="OFF button indicating a point is currently not active">
         <p>
-            <button type="button" id="roll-button" data-bs-toggle="tooltip" data-bs-title="Roll Button">Roll</button>
-            Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button">Bet</button>
-            <label for="bet-amount">Amount: <input type="number" id="bet-amount" min=1></label>
+            <button type="button" id="roll-button" data-bs-toggle="tooltip"
+                data-bs-title="Roll 2 six sided dice">Roll</button>
+            Last Roll: <a id="show-roll"></a> <button type="button" id="bet-button" data-bs-toggle="tooltip"
+                data-bs-title="Place current bet">Bet</button>
+            <label for="bet-amount">Amount: <input type="number" id="bet-amount" min=1 data-bs-toggle="tooltip"
+                    data-bs-title="Enter a bet amount, more than $1 with a maximum of current money"></label>
             Click num: <a id="clickNum"></a>
         </p>
     </div>

@@ -7,7 +7,8 @@ function firstGame() {
 function newGame() {
     firstViewed = false;
     playerMoney = 100;
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyElement.innerHTML = playerMoney;
+    playerMoneyChange();
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -37,7 +38,8 @@ function rollButtonState(enabled) {
 
 function betButtonState(enabled) {
     betDialogElement.setAttribute('max', playerMoney);
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyElement.innerHTML = playerMoney;
+    playerMoneyChange();
     if (enabled === true) {
         betDialogElement.disabled = false;
         betButtonElement.disabled = false;
@@ -134,7 +136,8 @@ function buttonPosition(loc) {
 function playerWin() {
     displayMessage('You win!');
     playerMoney += (betAmount * 2);
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyElement.innerHTML = playerMoney;
+    playerMoneyChange();
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -160,7 +163,8 @@ function placeBet() {
         return;
     }
     playerMoney -= betAmount;
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyElement.innerHTML = playerMoney;
+    playerMoneyChange();
     rollButtonState(true);
     betButtonState(false);
     return;
@@ -177,6 +181,14 @@ function gameOver() {
 // console.log('Moused over', e, str);
 // document.getElementById(item).setAttribute('data-bs-title', str);
 // }
+function playerMoneyChange() {
+    playerMoneyElement.style.transition = 'all 0.5s';
+    playerMoneyElement.style.fontSize = '300%';
+    playerMoneyElement.style.color = 'blue';
+    playerMoneyElement.style.transition = 'all 0.5s';
+    playerMoneyElement.style.fontSize = '120%';
+    playerMoneyElement.style.color = '#00ff00';
+}
 
 function displayMessage(str) {
     document.getElementById('current-message').innerHTML = str;
@@ -218,15 +230,15 @@ let playerPoint = 0;
 let betAmount = 0;
 let firstViewed = true;
 
-const displayMoney = document.getElementById('player-money');
+const playerMoneyElement = document.getElementById('player-money');
 const betButtonElement = document.getElementById('bet-button');
 const rollButtonElement = document.getElementById('roll-button');
 const betDialogElement = document.getElementById('bet-amount');
-const clickBoardNumber = document.querySelector('.boardmap');
 const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
+const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
@@ -246,5 +258,4 @@ for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
 }
 
-console.log(tooltipTriggerList);
 firstGame();
