@@ -7,7 +7,6 @@ function firstGame() {
 function newGame() {
     firstViewed = false;
     playerMoney = 100;
-    playerMoneyElement.innerHTML = playerMoney;
     playerMoneyChange();
     betAmount = 0;
     buttonPosition(1);
@@ -38,7 +37,6 @@ function rollButtonState(enabled) {
 
 function betButtonState(enabled) {
     betDialogElement.setAttribute('max', playerMoney);
-    playerMoneyElement.innerHTML = playerMoney;
     playerMoneyChange();
     if (enabled === true) {
         betDialogElement.disabled = false;
@@ -136,7 +134,6 @@ function buttonPosition(loc) {
 function playerWin() {
     displayMessage('You win!');
     playerMoney += (betAmount * 2);
-    playerMoneyElement.innerHTML = playerMoney;
     playerMoneyChange();
     buttonPosition(1);
     betAmount = 0;
@@ -163,7 +160,6 @@ function placeBet() {
         return;
     }
     playerMoney -= betAmount;
-    playerMoneyElement.innerHTML = playerMoney;
     playerMoneyChange();
     rollButtonState(true);
     betButtonState(false);
@@ -182,6 +178,7 @@ function gameOver() {
 // document.getElementById(item).setAttribute('data-bs-title', str);
 // }
 function playerMoneyChange() {
+    playerMoneyElement.innerHTML = playerMoney;
     playerMoneyElement.style.transition = 'all 0.5s';
     playerMoneyElement.style.fontSize = '300%';
     playerMoneyElement.style.color = 'blue';
