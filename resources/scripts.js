@@ -41,14 +41,14 @@ function betButtonState(enabled) {
     if (enabled === true) {
         betDialogElement.disabled = false;
         betButtonElement.disabled = false;
-        betButtonElement.setAttribute('data-bs-toggle', 'tooltip');
         betButtonElement.setAttribute('data-bs-title', 'Bet Button Enabled');
+        tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         return;
     }
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
-    betButtonElement.setAttribute('data-bs-toggle', 'tooltip');
     betButtonElement.setAttribute('data-bs-title', 'Bet Button Disabled');
+    tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
 function firstRoll() {
@@ -177,11 +177,12 @@ function gameOver() {
 // console.log('Moused over', e, str);
 // document.getElementById(item).setAttribute('data-bs-title', str);
 // }
-function playerMoneyChange() {
+async function playerMoneyChange() {
     playerMoneyElement.innerHTML = playerMoney;
     playerMoneyElement.style.transition = 'all 0.5s';
-    playerMoneyElement.style.fontSize = '300%';
+    playerMoneyElement.style.fontSize = '200%';
     playerMoneyElement.style.color = 'blue';
+    await new Promise(resolve => setTimeout(resolve, 500));
     playerMoneyElement.style.transition = 'all 0.5s';
     playerMoneyElement.style.fontSize = '120%';
     playerMoneyElement.style.color = '#00ff00';
@@ -238,7 +239,7 @@ const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-po
 const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 rollButtonElement.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
@@ -255,4 +256,5 @@ for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
 }
 
+console.log(tooltipList);
 firstGame();
