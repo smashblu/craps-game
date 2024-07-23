@@ -7,7 +7,7 @@ function firstGame() {
 function newGame() {
     firstViewed = false;
     playerMoney = 100;
-    playerMoneyChange();
+    playerMoneyChange('none');
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -37,18 +37,14 @@ function rollButtonState(enabled) {
 
 function betButtonState(enabled) {
     betDialogElement.setAttribute('max', playerMoney);
-    playerMoneyChange();
+    playerMoneyChange('none');
     if (enabled === true) {
         betDialogElement.disabled = false;
         betButtonElement.disabled = false;
-        betButtonElement.setAttribute('data-bs-title', 'Bet Button Enabled');
-        tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         return;
     }
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
-    betButtonElement.setAttribute('data-bs-title', 'Bet Button Disabled');
-    tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
 function firstRoll() {
@@ -134,7 +130,7 @@ function buttonPosition(loc) {
 function playerWin() {
     displayMessage('You win!');
     playerMoney += (betAmount * 2);
-    playerMoneyChange();
+    playerMoneyChange('add');
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -160,7 +156,7 @@ function placeBet() {
         return;
     }
     playerMoney -= betAmount;
-    playerMoneyChange();
+    playerMoneyChange('subtract');
     rollButtonState(true);
     betButtonState(false);
     return;
@@ -173,19 +169,25 @@ function gameOver() {
     betButtonState(false);
 }
 
-// function displayToolTip(e, str) {
-// console.log('Moused over', e, str);
-// document.getElementById(item).setAttribute('data-bs-title', str);
-// }
-async function playerMoneyChange() {
+async function playerMoneyChange(change) {
     playerMoneyElement.innerHTML = playerMoney;
-    playerMoneyElement.style.transition = 'all 0.5s';
-    playerMoneyElement.style.fontSize = '200%';
-    playerMoneyElement.style.color = 'blue';
-    await new Promise(resolve => setTimeout(resolve, 500));
-    playerMoneyElement.style.transition = 'all 0.5s';
-    playerMoneyElement.style.fontSize = '120%';
-    playerMoneyElement.style.color = '#00ff00';
+    if (change === 'subtract') {
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '75%';
+        playerMoneyElement.style.color = '#ff0000';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '120%';
+        playerMoneyElement.style.color = '#00ff00';
+    } if (change === 'add') {
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '175%';
+        playerMoneyElement.style.color = '#0000ff';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '120%';
+        playerMoneyElement.style.color = '#00ff00';
+    }
 }
 
 function displayMessage(str) {
@@ -238,12 +240,12 @@ const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
+
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 rollButtonElement.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
-// document.querySelector('.gameboard').addEventListener('mouseover', (e) => displayToolTip(e, 'TestStr', 'TestItem'));
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
@@ -256,5 +258,4 @@ for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
 }
 
-console.log(tooltipList);
 firstGame();
