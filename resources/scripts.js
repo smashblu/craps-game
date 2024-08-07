@@ -6,8 +6,9 @@ function firstGame() {
 
 function newGame() {
     firstViewed = false;
+    lastPlayerMoney = playerMoney;
     playerMoney = 100;
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyChange();
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -29,22 +30,22 @@ function loadGame() {
 
 function rollButtonState(enabled) {
     if (enabled === true) {
-        rollElement.disabled = false;
+        rollButtonElement.disabled = false;
         return;
     }
-    rollElement.disabled = true;
+    rollButtonElement.disabled = true;
 }
 
 function betButtonState(enabled) {
-    maxBetInput.setAttribute('max', playerMoney);
-    displayMoney.innerHTML = playerMoney;
+    betDialogElement.setAttribute('max', playerMoney);
+    playerMoneyChange();
     if (enabled === true) {
-        betDialog.disabled = false;
-        displayBetButton.disabled = false;
+        betDialogElement.disabled = false;
+        betButtonElement.disabled = false;
         return;
     }
-    betDialog.disabled = true;
-    displayBetButton.disabled = true;
+    betDialogElement.disabled = true;
+    betButtonElement.disabled = true;
 }
 
 function firstRoll() {
@@ -80,8 +81,8 @@ function gameRoll() {
 
 function checkGameState() {
     if (pointOpen === false) {
-       firstRoll(); 
-       return;
+        firstRoll();
+        return;
     }
     gameRoll();
 }
@@ -129,8 +130,9 @@ function buttonPosition(loc) {
 
 function playerWin() {
     displayMessage('You win!');
+    lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyChange();
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -150,13 +152,14 @@ function playerLose() {
 }
 
 function placeBet() {
-    betAmount = betDialog.value;
+    betAmount = betDialogElement.value;
     betAmount = parseInt(betAmount);
     if (validateBet() === false) {
         return;
     }
+    lastPlayerMoney = playerMoney;
     playerMoney -= betAmount;
-    displayMoney.innerHTML = playerMoney;
+    playerMoneyChange();
     rollButtonState(true);
     betButtonState(false);
     return;
@@ -167,6 +170,31 @@ function gameOver() {
     buttonPosition(1);
     rollButtonState(false);
     betButtonState(false);
+}
+
+async function playerMoneyChange() {
+    playerMoneyElement.innerHTML = playerMoney;
+    if (playerMoney < lastPlayerMoney) {
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '75%';
+        playerMoneyElement.style.color = '#ff0000';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '120%';
+        playerMoneyElement.style.color = '#00ff00';
+        return;
+    }
+    if (playerMoney > lastPlayerMoney) {
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '175%';
+        playerMoneyElement.style.color = '#0000ff';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        playerMoneyElement.style.transition = 'all 0.5s';
+        playerMoneyElement.style.fontSize = '120%';
+        playerMoneyElement.style.color = '#00ff00';
+        return;
+    }
+    return;
 }
 
 function displayMessage(str) {
@@ -190,46 +218,48 @@ function validateBet() {
 }
 
 function diceRoll() {
-    const dieOne = getRandomInt(1,7); 
-    const dieTwo = getRandomInt(1,7); 
+    const dieOne = getRandomInt(1, 7);
+    const dieTwo = getRandomInt(1, 7);
     playerRoll = dieOne + dieTwo;
     document.getElementById('show-roll').innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
 }
 
 function getRandomInt(min, max) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
 }
 
 let playerMoney = 100;
+let lastPlayerMoney = 0;
 let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 let firstViewed = true;
 
-const displayBetButton = document.getElementById('bet-button');
-const displayMoney = document.getElementById('player-money');
-const rollDiceButton = document.querySelector('#roll-button');
-const rollElement = document.getElementById('roll-button');
-const maxBetInput = document.querySelector('#bet-amount');
-const betDialog = document.getElementById('bet-amount');
-const clickBoardNumber = document.querySelector('.boardmap');
+const playerMoneyElement = document.getElementById('player-money');
+const betButtonElement = document.getElementById('bet-button');
+const rollButtonElement = document.getElementById('roll-button');
+const betDialogElement = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
+const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
 
-rollDiceButton.addEventListener('click', diceRoll);
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+rollButtonElement.addEventListener('click', diceRoll);
 clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-rollElement.addEventListener('click', checkGameState);
+rollButtonElement.addEventListener('click', checkGameState);
 document.querySelector('#bet-button').addEventListener('click', placeBet);
 
 for (let i = 0; i < newGameButtons.length; i++) {

@@ -17,13 +17,27 @@
     color: blue;
 }
 
-.gameboard, .about, .rules {
+.gameboard,
+.about,
+.rules {
     background-color: #548347
 }
 
 .gameboard {
     position: relative;
     z-index: 1;
+}
+
+.player-money-display {
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 120%;
+    text-decoration: none;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 #on-button {
@@ -39,4 +53,8 @@
     width: 85px;
     left: 1475px;
     top: 55px;
+}
+
+.footer {
+    background-image: linear-gradient(#548347, #444444);
 }
