@@ -54,3 +54,7 @@
     left: 1475px;
     top: 55px;
 }
+
+.footer {
+    background-image: linear-gradient(#548347, #444444);
+}

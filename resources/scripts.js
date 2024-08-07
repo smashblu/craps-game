@@ -6,8 +6,9 @@ function firstGame() {
 
 function newGame() {
     firstViewed = false;
+    lastPlayerMoney = playerMoney;
     playerMoney = 100;
-    playerMoneyChange('none');
+    playerMoneyChange();
     betAmount = 0;
     buttonPosition(1);
     displayMessage('New game started');
@@ -37,7 +38,7 @@ function rollButtonState(enabled) {
 
 function betButtonState(enabled) {
     betDialogElement.setAttribute('max', playerMoney);
-    playerMoneyChange('none');
+    playerMoneyChange();
     if (enabled === true) {
         betDialogElement.disabled = false;
         betButtonElement.disabled = false;
@@ -129,8 +130,9 @@ function buttonPosition(loc) {
 
 function playerWin() {
     displayMessage('You win!');
+    lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
-    playerMoneyChange('add');
+    playerMoneyChange();
     buttonPosition(1);
     betAmount = 0;
     rollButtonState(false);
@@ -155,8 +157,9 @@ function placeBet() {
     if (validateBet() === false) {
         return;
     }
+    lastPlayerMoney = playerMoney;
     playerMoney -= betAmount;
-    playerMoneyChange('subtract');
+    playerMoneyChange();
     rollButtonState(true);
     betButtonState(false);
     return;
@@ -169,9 +172,9 @@ function gameOver() {
     betButtonState(false);
 }
 
-async function playerMoneyChange(change) {
+async function playerMoneyChange() {
     playerMoneyElement.innerHTML = playerMoney;
-    if (change === 'subtract') {
+    if (playerMoney < lastPlayerMoney) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '75%';
         playerMoneyElement.style.color = '#ff0000';
@@ -179,7 +182,9 @@ async function playerMoneyChange(change) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '120%';
         playerMoneyElement.style.color = '#00ff00';
-    } if (change === 'add') {
+        return;
+    }
+    if (playerMoney > lastPlayerMoney) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '175%';
         playerMoneyElement.style.color = '#0000ff';
@@ -187,7 +192,9 @@ async function playerMoneyChange(change) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '120%';
         playerMoneyElement.style.color = '#00ff00';
+        return;
     }
+    return;
 }
 
 function displayMessage(str) {
@@ -224,6 +231,7 @@ function getRandomInt(min, max) {
 }
 
 let playerMoney = 100;
+let lastPlayerMoney = 0;
 let playerRoll = 0;
 let pointOpen = false;
 let playerPoint = 0;
