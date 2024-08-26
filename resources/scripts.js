@@ -217,10 +217,15 @@ function validateBet() {
     return true;
 }
 
-function diceRoll() {
+async function diceRoll() {
     const dieOne = getRandomInt(1, 7);
     const dieTwo = getRandomInt(1, 7);
     playerRoll = dieOne + dieTwo;
+    firstDieElement.setAttribute('src', `images/dice_animated.gif`);
+    secondDieElement.setAttribute('src', `images/dice_animated.gif`);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    firstDieElement.setAttribute('src', `images/dice_${dieOne}.png`);
+    secondDieElement.setAttribute('src', `images/dice_${dieTwo}.png`);
     document.getElementById('show-roll').innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
 }
 
@@ -248,6 +253,8 @@ const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
+const firstDieElement = document.getElementById('first-die');
+const secondDieElement = document.getElementById('second-die');
 
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
