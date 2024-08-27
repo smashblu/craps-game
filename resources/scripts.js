@@ -48,8 +48,9 @@ function betButtonState(enabled) {
     betButtonElement.disabled = true;
 }
 
-function firstRoll() {
+async function firstRoll() {
     diceRoll();
+    await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(`You rolled ${playerRoll}`);
     if (playerRoll === 7 || playerRoll === 11) {
         playerWin();
@@ -65,8 +66,9 @@ function firstRoll() {
     displayMessage(`Your point is ${playerPoint}`);
 }
 
-function gameRoll() {
+async function gameRoll() {
     diceRoll();
+    await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(`You rolled ${playerRoll}`);
     if (playerRoll === playerPoint) {
         playerWin();
@@ -226,7 +228,8 @@ async function diceRoll() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     firstDieElement.setAttribute('src', `images/dice_${dieOne}.png`);
     secondDieElement.setAttribute('src', `images/dice_${dieTwo}.png`);
-    document.getElementById('show-roll').innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
+    showRollElement.innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
+    rollDisplayElement.innerHTML = `${playerRoll}`;
 }
 
 function getRandomInt(min, max) {
@@ -248,6 +251,8 @@ const betButtonElement = document.getElementById('bet-button');
 const rollButtonElement = document.getElementById('roll-button');
 const betDialogElement = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
+const showRollElement = document.getElementById('show-roll')
+const rollDisplayElement = document.getElementById('roll-display')
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
