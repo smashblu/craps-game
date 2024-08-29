@@ -109,7 +109,7 @@ body {
     height: auto;
 }
 
-.chip-text {
+#chip-text {
     margin: 0;
     position: absolute;
     top: 50%;

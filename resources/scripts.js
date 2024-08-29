@@ -14,6 +14,7 @@ function newGame() {
     displayMessage('New game started');
     rollButtonState(false);
     betButtonState(true);
+    comeButtonState(false);
 }
 
 function saveGame() {
@@ -46,6 +47,14 @@ function betButtonState(enabled) {
     }
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
+}
+
+function comeButtonState(enabled) {
+    if (enabled === true) {
+        comeButtonElement.disabled = false;
+        return;
+    }
+    comeButtonElement.disabled = true;
 }
 
 async function firstRoll() {
@@ -126,6 +135,17 @@ function buttonPosition(loc) {
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
             onButton.style.left = '1235px';
+            break;
+    }
+}
+
+function chipChange(loc, color) {
+    switch (loc) {
+        case 1:
+            chipContainerElement.style.visibility = 'hidden';
+            break;
+        case 2:
+            chipContainerElement.style.visibility = 'visible';
             break;
     }
 }
@@ -248,6 +268,7 @@ let firstViewed = true;
 
 const playerMoneyElement = document.getElementById('player-money');
 const betButtonElement = document.getElementById('bet-button');
+const comeButtonElement = document.getElementById('come-button');
 const rollButtonElement = document.getElementById('roll-button');
 const betDialogElement = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
@@ -255,6 +276,9 @@ const showRollElement = document.getElementById('show-roll')
 const rollDisplayElement = document.getElementById('roll-display')
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
+const chipContainerElement = document.querySelector('.chip-container');
+const chipTextElement = document.getElementById('chip-text');
+const chipImgElement = document.getElementById('chip-img');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
@@ -269,6 +293,7 @@ clickBoardNumber.addEventListener('click', boardClick);
 buttonPosition(1);
 rollButtonState(false);
 betButtonState(false);
+comeButtonState(false);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
 rollButtonElement.addEventListener('click', checkGameState);
@@ -278,4 +303,5 @@ for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
 }
 
+chipChange(2, 1);
 firstGame();
