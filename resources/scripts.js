@@ -173,10 +173,10 @@ function playerLose() {
     betButtonState(true);
 }
 
-function placeBet() {
+function makeBet() {
     betAmount = betDialogElement.value;
     betAmount = parseInt(betAmount);
-    if (validateBet() === false) {
+    if (validateBet(betAmount) === false) {
         return;
     }
     lastPlayerMoney = playerMoney;
@@ -230,7 +230,7 @@ function boardClick(e) { // To implement: advanced betting during game
     let i = parseInt(e.target.alt);
 }
 
-function validateBet() {
+function validateBet(betAmount) {
     if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
         displayMessage('Please insert valid bet');
         betAmount = 0;
@@ -297,7 +297,7 @@ comeButtonState(false);
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
 rollButtonElement.addEventListener('click', checkGameState);
-document.querySelector('#bet-button').addEventListener('click', placeBet);
+document.querySelector('#bet-button').addEventListener('click', makeBet);
 
 for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
