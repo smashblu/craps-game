@@ -15,6 +15,7 @@ function newGame() {
 
 function resetGame() {
     playerRoll = 1;
+    pointOpen = false;
     buttonPosition(playerRoll);
     betAmount = 0;
     buttonStates();
@@ -34,13 +35,12 @@ function loadGame() {
 
 function buttonStates() {
     if (betAmount === 0) {
-        console.log('if true');
         rollButtonElement.disabled = true;
         betDialogElement.disabled = false;
         betButtonElement.disabled = false;
+        comeButtonElement.disabled = true;
         return;
     }
-    console.log('bypass if');
     betDialogElement.setAttribute('max', playerMoney);
     playerMoneyChange();
     rollButtonElement.disabled = false;
@@ -49,6 +49,7 @@ function buttonStates() {
     comeButtonElement.disabled = true;
     if (pointOpen === true) {
         comeButtonElement.disabled = false;
+        betDialogElement.disabled = false;
     }
     return;
 }
@@ -152,8 +153,7 @@ function playerWin() {
     lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
     playerMoneyChange();
-    betAmount = 0;
-    buttonStates();
+    resetGame();
 }
 
 function playerLose() {
@@ -162,14 +162,11 @@ function playerLose() {
         gameOver();
         return;
     }
-    playerRoll = 1;
     buttonPosition(playerRoll);
-    betAmount = 0;
-    buttonStates();
+    resetGame();
 }
 
-function makeBet(e) {
-    console.log(e);
+function makeBet() {
     betAmount = betDialogElement.value;
     betAmount = parseInt(betAmount);
     if (validateBet(betAmount) === false) {
@@ -178,13 +175,28 @@ function makeBet(e) {
     lastPlayerMoney = playerMoney;
     playerMoney -= betAmount;
     playerMoneyChange();
-    console.log(betAmount);
     buttonStates();
     return;
 }
 
-function makeCome(e) {
-    console.log('Not yet implemented');
+function makeCome() {
+    comeNum++;
+    comeAmount = betDialogElement.value;
+    comeAmount = parseInt(comeAmount);
+    if (validateBet(comeAmount) === false) {
+        return;
+    }
+    lastPlayerMoney = playerMoney;
+    playerMoney -= comeAmount;
+    playerMoneyChange();
+    comeBetList.push(new come(comeNum, 1, comeAmount));
+    console.log(comeBetList);
+}
+
+function come(betNum, point, amount) {
+    this.betNum = betNum;
+    this.point = point;
+    this.amount = amount;
 }
 
 function gameOver() {
@@ -267,6 +279,7 @@ let betAmount = 0;
 let comeAmount = 0;
 let placeAmount = 0;
 let firstViewed = true;
+let comeNum = 0;
 
 const playerMoneyElement = document.getElementById('player-money');
 const betButtonElement = document.getElementById('bet-button');
@@ -286,6 +299,7 @@ const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
 const firstDieElement = document.getElementById('first-die');
 const secondDieElement = document.getElementById('second-die');
+const comeBetList = [];
 
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
