@@ -83,6 +83,9 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(`You rolled ${playerRoll}`);
+    if (comeNum !== 0) {
+        comeRoll(playerRoll);
+    }
     if (playerRoll === playerPoint) {
         playerWin();
         return;
@@ -102,6 +105,23 @@ function checkGameState() {
     }
     gameRoll();
     return;
+}
+
+function comeRoll(roll) {
+    for (let i = 0; i < comeBetList.length; i++) {
+        if (roll === 7 || roll === 11) {
+            playerWin('come');
+        }
+        if (roll === 2 || roll === 3 || roll === 12) {
+            playerLose('come');
+        }
+        if (comeBetList[i].point === 1) {
+            comeBetList[i].point = roll;
+        }
+        if (comeBetList[i].point === roll) {
+            playerWin('come');
+        }
+    }
 }
 
 function buttonPosition(loc) {
@@ -158,8 +178,10 @@ function chipChange(loc, color) {
     return;
 }
 
-function playerWin() {
+function playerWin(type) {
     displayMessage('You win!');
+    if (type === 'come') {
+    }
     lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
     playerMoneyChange();
@@ -167,11 +189,13 @@ function playerWin() {
     return;
 }
 
-function playerLose() {
+function playerLose(type) {
     displayMessage('You lose')
     if (playerMoney === 0) {
         gameOver();
         return;
+    }
+    if (type === 'come') {
     }
     buttonPosition(playerRoll);
     resetGame();
@@ -202,7 +226,6 @@ function makeCome() {
     playerMoney -= comeAmount;
     playerMoneyChange();
     comeBetList.push(new come(comeNum, 1, comeAmount));
-    console.log(comeBetList);
     return;
 }
 
@@ -328,7 +351,6 @@ comeButtonElement.disabled = true;
 
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-rollButtonElement.addEventListener('click', diceRoll);
 rollButtonElement.addEventListener('click', checkGameState);
 betButtonElement.addEventListener('click', makeBet);
 clickBoardNumber.addEventListener('click', boardClick);

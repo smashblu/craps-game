@@ -19,9 +19,7 @@ return
 
 - New Roll Function
 
+If a come bet exists:
+
 ```
-for Come:
-if diceRoll = 7 || 11, pay come bet and alert
-if diceRoll = 2,3,12, delete bet and alert
-if diceRoll = 4,5,6,8,9,10, set come as such and alert, place chip on number
 ```
