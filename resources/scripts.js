@@ -2,6 +2,7 @@ function firstGame() {
     if (firstViewed === true) {
         firstScreenFade.show();
     }
+    return;
 }
 
 function newGame() {
@@ -11,6 +12,7 @@ function newGame() {
     playerMoneyChange();
     resetGame();
     displayMessage('New game started');
+    return;
 }
 
 function resetGame() {
@@ -19,18 +21,21 @@ function resetGame() {
     buttonPosition(playerRoll);
     betAmount = 0;
     buttonStates();
+    return;
 }
 
 function saveGame() {
     displayMessage('Saving not yet implemented');
     offButton.style.visibility = 'hidden';
     onButton.style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
+    return;
 }
 
 function loadGame() {
     displayMessage('Loading not yet implemented');
     offButton.style.visibility = 'visible';
     onButton.style.left = '85px';
+    return;
 }
 
 function buttonStates() {
@@ -71,6 +76,7 @@ async function firstRoll() {
     buttonPosition(playerRoll);
     displayMessage(`Your point is ${playerPoint}`);
     buttonStates();
+    return;
 }
 
 async function gameRoll() {
@@ -86,6 +92,7 @@ async function gameRoll() {
         return;
     }
     displayMessage('No action, roll again');
+    return;
 }
 
 function checkGameState() {
@@ -94,6 +101,7 @@ function checkGameState() {
         return;
     }
     gameRoll();
+    return;
 }
 
 function buttonPosition(loc) {
@@ -135,6 +143,7 @@ function buttonPosition(loc) {
             onButton.style.left = '1235px';
             break;
     }
+    return;
 }
 
 function chipChange(loc, color) {
@@ -146,6 +155,7 @@ function chipChange(loc, color) {
             chipContainerElement.style.visibility = 'visible';
             break;
     }
+    return;
 }
 
 function playerWin() {
@@ -154,6 +164,7 @@ function playerWin() {
     playerMoney += (betAmount * 2);
     playerMoneyChange();
     resetGame();
+    return;
 }
 
 function playerLose() {
@@ -164,6 +175,7 @@ function playerLose() {
     }
     buttonPosition(playerRoll);
     resetGame();
+    return;
 }
 
 function makeBet() {
@@ -191,6 +203,7 @@ function makeCome() {
     playerMoneyChange();
     comeBetList.push(new come(comeNum, 1, comeAmount));
     console.log(comeBetList);
+    return;
 }
 
 function come(betNum, point, amount) {
@@ -201,9 +214,10 @@ function come(betNum, point, amount) {
 
 function gameOver() {
     displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
-    playerPoint = 1;
+    playerRoll = 1;
     buttonPosition(playerRoll);
     buttonStates();
+    return;
 }
 
 async function playerMoneyChange() {
@@ -235,11 +249,13 @@ function displayMessage(str) {
     document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
+    return;
 }
 
 function boardClick(e) { // To implement: advanced betting during game
     document.getElementById('clickNum').innerHTML = e.target.alt;
     let i = parseInt(e.target.alt);
+    return;
 }
 
 function validateBet(betAmount) {
@@ -262,6 +278,7 @@ async function diceRoll() {
     secondDieElement.setAttribute('src', `images/dice_${dieTwo}.png`);
     showRollElement.innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
     rollDisplayElement.innerHTML = `${playerRoll}`;
+    return;
 }
 
 function getRandomInt(min, max) {
