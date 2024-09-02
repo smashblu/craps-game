@@ -31,12 +31,16 @@ body {
 .gameboard,
 .about,
 .rules {
-    background-color: #548347
+    background-color: #548347;
 }
 
 .gameboard {
     position: relative;
     z-index: 1;
+}
+
+.gameboard p {
+    margin-bottom: 0;
 }
 
 .player-money-display,
