@@ -9,7 +9,7 @@ function newGame() {
     firstViewed = false;
     lastPlayerMoney = playerMoney;
     playerMoney = 100;
-    playerMoneyChange();
+    moneyChange();
     resetGame();
     displayMessage('New game started');
     return;
@@ -47,7 +47,8 @@ function buttonStates() {
         return;
     }
     betDialogElement.setAttribute('max', playerMoney);
-    playerMoneyChange();
+    lastPlayerMoney = playerMoney;
+    moneyChange();
     rollButtonElement.disabled = false;
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
@@ -86,6 +87,9 @@ async function gameRoll() {
     if (comeNum !== 0) {
         comeRoll(playerRoll);
     }
+    if (placeNum !== 0) {
+        placeRoll(playerRoll);
+    }
     if (playerRoll === playerPoint) {
         playerWin();
         return;
@@ -122,6 +126,12 @@ function comeRoll(roll) {
             playerWin('come');
         }
     }
+    return;
+}
+
+function placeRoll(roll) {
+    console.log(roll);
+    return;
 }
 
 function buttonPosition(loc) {
@@ -184,8 +194,8 @@ function playerWin(type) {
     }
     lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
-    playerMoneyChange();
     resetGame();
+    moneyChange();
     return;
 }
 
@@ -199,6 +209,7 @@ function playerLose(type) {
     }
     buttonPosition(playerRoll);
     resetGame();
+    moneyChange();
     return;
 }
 
@@ -210,7 +221,7 @@ function makeBet() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= betAmount;
-    playerMoneyChange();
+    moneyChange();
     buttonStates();
     return;
 }
@@ -224,12 +235,23 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    playerMoneyChange();
+    moneyChange();
     comeBetList.push(new come(comeNum, 1, comeAmount));
     return;
 }
 
+function makePlace(num) {
+    console.log(`point open, ${num} was clicked`);
+    return;
+}
+
 function come(betNum, point, amount) {
+    this.betNum = betNum;
+    this.point = point;
+    this.amount = amount;
+}
+
+function place(betNum, point, amount) {
     this.betNum = betNum;
     this.point = point;
     this.amount = amount;
@@ -243,8 +265,13 @@ function gameOver() {
     return;
 }
 
-async function playerMoneyChange() {
+async function moneyChange() {
+    totalBets = betAmount + comeAmount + placeAmount;
     playerMoneyElement.innerHTML = playerMoney;
+    playerBetElement.innerHTML = totalBets;
+    if (playerMoney === lastPlayerMoney) {
+        return;
+    }
     if (playerMoney < lastPlayerMoney) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '75%';
@@ -275,9 +302,17 @@ function displayMessage(str) {
     return;
 }
 
-function boardClick(e) { // To implement: advanced betting during game
-    document.getElementById('clickNum').innerHTML = e.target.alt;
-    let i = parseInt(e.target.alt);
+function boardClick(e) {
+    let numClicked = parseInt(e.target.alt);
+    if (pointOpen === false) {
+        displayMessage(`You cannot place on ${numClicked} because no point is open`);
+        return;
+    }
+    if (numClicked === playerPoint) {
+        displayMessage('You cannot place on the current point');
+        return;
+    }
+    makePlace(numClicked);
     return;
 }
 
@@ -318,10 +353,13 @@ let playerPoint = 0;
 let betAmount = 0;
 let comeAmount = 0;
 let placeAmount = 0;
+let totalBets = 0;
 let firstViewed = true;
 let comeNum = 0;
+let placeNum = 0;
 
 const playerMoneyElement = document.getElementById('player-money');
+const playerBetElement = document.getElementById('player-bet');
 const betButtonElement = document.getElementById('bet-button');
 const comeButtonElement = document.getElementById('come-button');
 const rollButtonElement = document.getElementById('roll-button');
@@ -340,6 +378,7 @@ const newGameButtons = document.querySelectorAll('.new-game');
 const firstDieElement = document.getElementById('first-die');
 const secondDieElement = document.getElementById('second-die');
 const comeBetList = [];
+const placeBetList = [];
 
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
@@ -354,7 +393,7 @@ document.querySelector('#save-game').addEventListener('click', saveGame);
 rollButtonElement.addEventListener('click', checkGameState);
 betButtonElement.addEventListener('click', makeBet);
 clickBoardNumber.addEventListener('click', boardClick);
-comeButtonElement.addEventListener('click', makeCome);
+// comeButtonElement.addEventListener('click', makeCome);
 
 for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
