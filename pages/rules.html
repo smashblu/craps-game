@@ -1,18 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8" />
-<title>Browser Craps</title>
-<link rel="stylesheet" href="../resources/styles.css">
-<script src="../resources/scripts.js"></script>
-</head>
-</html>
-<body>
-    <div class="header" id="header">
-        <h2>Browser Craps</h2>
-    </div>
-    <div class="rules" id="rules">
-        <h2>Rules</h2>
-        <p>Here are the rules.</p>
-    </div>
-</body>
+<h1 id="browser-craps">Browser Craps</h1>
+<ol type="1">
+<li><a href="#what-is-craps">What is Craps?</a></li>
+<li><a href="#starting-the-game">Starting the Game</a></li>
+<li><a href="#making-a-bet">Making a Bet</a></li>
+</ol>
+<h2 id="what-is-craps">What is Craps?</h2>
+<p>Craps is dice casino game. It is player vs. house, rather than player
+vs. player. The goal is to win as much money as possible from the
+house.</p>
+<p>The game is played in rounds. Each round consists of betting and
+rolling. When rolling, the player rolls two 6-sided dice which
+determines the possible winner of the round.</p>
+<h2 id="starting-the-game">Starting the Game</h2>
+<p>Once clicking the “Start Game” button (or “New Game” from the Game
+Menu), the player is given $100 to bet with.</p>
+<h2 id="making-a-bet">Making a Bet</h2>
+<p>When the round starts, the player can make a bet in any amount they
+choose. This bet is then locked in and the dice can then be rolled. The
+game is over if the player’s money reaches $0.</p>
+<h2 id="rolling-the-dice">Rolling the Dice</h2>
+<p>After a bet is made, the dice can be rolled. The outcome of the roll
+will determine the <strong>point</strong>.</p>
+<ul>
+<li>If the roll is a <strong>7</strong> or <strong>11</strong>, the bet
+automatically wins</li>
+<li>If the roll is a <strong>2</strong>, <strong>3</strong>, or
+<strong>12</strong>, the bet automatically loses</li>
+<li>If the roll is any other number, it becomes the
+<strong>point</strong></li>
+</ul>
+<h2 id="the-point">The Point</h2>
+<p>The point becomes the target number the player wants to roll to win.
+There are six possible points with three scales of difficulty:</p>
+<ul>
+<li>The <strong>easy</strong> points are <strong>6</strong> and
+<strong>8</strong></li>
+<li>The <strong>medium</strong> points are <strong>5</strong> and
+<strong>9</strong></li>
+<li>The <strong>hard</strong> points are <strong>4</strong> and
+<strong>10</strong></li>
+</ul>
+<p>The object of the game is roll the point before a <strong>7</strong>
+is rolled. At this time, any other numbers are irrelevant.</p>
+<h2 id="other-bets">Other Bets</h2>
+<p>While the <strong>point</strong> is active, there are other bets that
+can be made.</p>
+<h3 id="come-bets">Come Bets</h3>
+<p>A <strong>come</strong> bet is essentially determining a new point
+while the current point is active. When a <strong>come</strong> bet is
+placed, it is noted and the dice are rolled. Based on the outcome of the
+next roll, the <em>come</em> bet will activate. The activation is
+exactly the same as the initial bet rules, a <strong>7</strong> or
+<strong>11</strong> wins, a <strong>2</strong>, <strong>3</strong>, or
+<strong>12</strong> loses. Finally, any other number moves the
+<strong>come</strong> bet to that number and stays there until either a
+<strong>7</strong> or the <strong>come</strong> point is rolled. If the
+original <strong>point</strong> is rolled, the <strong>come</strong> bet
+is unaffected and remains active.</p>
+<h3 id="place-bets">Place Bets</h3>
+<p>A <strong>place</strong> bet is a bet on a specific number. The
+player can choose any of the six numbers on the board to make a
+<strong>place</strong> bet and the desired amount. All numbers besides
+the point can have a <strong>place</strong>. The object of the
+<strong>place</strong> bet becomes rolling that number before a
+<strong>7</strong> is rolled. If the original <strong>point</strong> is
+rolled, the <strong>place</strong> bet is returned to the player (a
+“push”).</p>
