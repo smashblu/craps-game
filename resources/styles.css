@@ -136,3 +136,9 @@ body {
     padding-bottom: 250px;
     margin-bottom: -250px;
 }
+
+.rules {
+    padding-top: 50px;
+    padding-left: 5%;
+    padding-bottom: 200px;
+}
