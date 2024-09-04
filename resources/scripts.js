@@ -9,7 +9,7 @@ function newGame() {
     firstViewed = false;
     lastPlayerMoney = playerMoney;
     playerMoney = 100;
-    moneyChange();
+    moneyChange(0);
     resetGame();
     displayMessage('New game started');
     return;
@@ -20,6 +20,7 @@ function resetGame() {
     pointOpen = false;
     buttonPosition(playerRoll);
     betAmount = 0;
+    totalBets = 0;
     buttonStates();
     return;
 }
@@ -48,7 +49,7 @@ function buttonStates() {
     }
     betDialogElement.setAttribute('max', playerMoney);
     lastPlayerMoney = playerMoney;
-    moneyChange();
+    moneyChange(0);
     rollButtonElement.disabled = false;
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
@@ -84,11 +85,8 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(`You rolled ${playerRoll}`);
-    if (comeNum !== 0) {
-        comeRoll(playerRoll);
-    }
-    if (placeNum !== 0) {
-        placeRoll(playerRoll);
+    if (secondaryBetList.length !== 0) {
+        secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
         playerWin();
@@ -112,17 +110,17 @@ function checkGameState() {
 }
 
 function comeRoll(roll) {
-    for (let i = 0; i < comeBetList.length; i++) {
+    for (let i = 0; i < secondaryBetList.length; i++) {
         if (roll === 7 || roll === 11) {
             playerWin('come');
         }
         if (roll === 2 || roll === 3 || roll === 12) {
             playerLose('come');
         }
-        if (comeBetList[i].point === 1) {
-            comeBetList[i].point = roll;
+        if (secondaryBetList[i].point === 1) {
+            secondaryBetList[i].point = roll;
         }
-        if (comeBetList[i].point === roll) {
+        if (secondaryBetList[i].point === roll) {
             playerWin('come');
         }
     }
@@ -130,6 +128,11 @@ function comeRoll(roll) {
 }
 
 function placeRoll(roll) {
+    console.log(roll);
+    return;
+}
+
+function secondaryRoll(roll) {
     console.log(roll);
     return;
 }
@@ -195,7 +198,7 @@ function playerWin(type) {
     lastPlayerMoney = playerMoney;
     playerMoney += (betAmount * 2);
     resetGame();
-    moneyChange();
+    moneyChange(0);
     return;
 }
 
@@ -209,7 +212,7 @@ function playerLose(type) {
     }
     buttonPosition(playerRoll);
     resetGame();
-    moneyChange();
+    moneyChange(0);
     return;
 }
 
@@ -221,13 +224,12 @@ function makeBet() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= betAmount;
-    moneyChange();
+    moneyChange(betAmount);
     buttonStates();
     return;
 }
 
 function makeCome() {
-    comeNum++;
     comeAmount = betDialogElement.value;
     comeAmount = parseInt(comeAmount);
     if (validateBet(comeAmount) === false) {
@@ -235,38 +237,52 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    moneyChange();
-    comeBetList.push(new come(comeNum, 1, comeAmount));
+    secondaryBetList.push(new SecondaryBet(1, comeAmount));
+    moneyChange(comeAmount);
     return;
 }
 
 function makePlace(num) {
     console.log(`point open, ${num} was clicked`);
+    placeDialogAmount.setAttribute('max', playerMoney);
+    placeDialog.showModal();
+    placeDialogCancel.addEventListener('click', () => {
+        placeDialog.close()
+    });
+    placeDialogAccept.addEventListener('click', () => {
+        placeAmount = placeDialogAmount.value;
+        placeAmount = parseInt(placeAmount);
+        if (validateBet(placeAmount) === false) {
+            placeDialog.close();
+            displayMessage('Please make a valid place bet');
+        } else {
+            lastPlayerMoney = playerMoney;
+            playerMoney -= placeAmount;
+            secondaryBetList.push(new SecondaryBet(num, placeDialogAmount.value));
+            moneyChange(placeAmount);
+            placeDialog.close();
+        }
+    });
     return;
 }
 
-function come(betNum, point, amount) {
-    this.betNum = betNum;
-    this.point = point;
-    this.amount = amount;
-}
-
-function place(betNum, point, amount) {
-    this.betNum = betNum;
-    this.point = point;
-    this.amount = amount;
+class SecondaryBet {
+    constructor(point, amount) {
+        this.point = point;
+        this.amount = amount;
+    }
 }
 
 function gameOver() {
-    displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
+    displayMessage(`You are bankrupt! Please choose 'place-accept' from the menu to play again`);
     playerRoll = 1;
     buttonPosition(playerRoll);
     buttonStates();
     return;
 }
 
-async function moneyChange() {
-    totalBets = betAmount + comeAmount + placeAmount;
+async function moneyChange(newBet) {
+    totalBets += newBet;
     playerMoneyElement.innerHTML = playerMoney;
     playerBetElement.innerHTML = totalBets;
     if (playerMoney === lastPlayerMoney) {
@@ -355,8 +371,6 @@ let comeAmount = 0;
 let placeAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
-let comeNum = 0;
-let placeNum = 0;
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
@@ -377,8 +391,11 @@ const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
 const firstDieElement = document.getElementById('first-die');
 const secondDieElement = document.getElementById('second-die');
-const comeBetList = [];
-const placeBetList = [];
+const placeDialog = document.querySelector('dialog');
+const placeDialogAmount = document.getElementById('place-amount');
+const placeDialogCancel = document.getElementById('place-cancel');
+const placeDialogAccept = document.getElementById('place-accept');
+const secondaryBetList = [];
 
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
