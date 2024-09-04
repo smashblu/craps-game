@@ -66,11 +66,11 @@ async function firstRoll() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(DICEROLLED);
     if (playerRoll === 7 || playerRoll === 11) {
-        playerWin();
+        playerWin(PRIMARY, betAmount);
         return;
     }
     if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
-        playerLose();
+        playerLose(PRIMARY, betAmount);
         return;
     }
     playerPoint = playerRoll;
@@ -89,17 +89,17 @@ async function gameRoll() {
         secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
-        playerWin();
+        playerWin(PRIMARY, betAmount);
         return;
     }
     if (playerRoll === 7) {
-        playerLose();
+        playerLose(PRIMARY, betAmount);
         return;
     }
     displayMessage(NOACTION);
+    buttonStates();
     return;
 }
-
 function checkGameState() {
     if (pointOpen === false) {
         firstRoll();
@@ -109,7 +109,7 @@ function checkGameState() {
     return;
 }
 
-function comeRoll(roll) {
+/* function comeRoll(roll) {
     for (let i = 0; i < secondaryBetList.length; i++) {
         if (roll === 7 || roll === 11) {
             playerWin('come');
@@ -125,15 +125,10 @@ function comeRoll(roll) {
         }
     }
     return;
-}
-
-function placeRoll(roll) {
-    console.log(roll);
-    return;
-}
+} */
 
 function secondaryRoll(roll) {
-    console.log(roll);
+    console.log('sec', roll);
     return;
 }
 
@@ -191,24 +186,30 @@ function chipChange(loc, color) {
     return;
 }
 
-function playerWin(type) {
-    displayMessage(WIN);
-    if (type === 'come') {
+function playerWin(type, amount) {
+    if (type === SECONDARY) {
+        lastPlayerMoney = playerMoney;
+        playerMoney += (amount * 2);
+        console.log('Pay bet, delete from array, send msg');
     }
+    displayMessage(PRIMARYWIN);
     lastPlayerMoney = playerMoney;
-    playerMoney += (betAmount * 2);
+    playerMoney += (amount * 2);
     resetGame();
     moneyChange(0);
     return;
 }
 
-function playerLose(type) {
-    displayMessage(LOSE)
+function playerLose(type, amount) {
+    if (type === SECONDARY) {
+        lastPlayerMoney = playerMoney;
+        playerMoney += (amount * 2);
+        console.log('Take bet, delete from array, send msg');
+    }
+    displayMessage(PRIMARYLOSE)
     if (playerMoney === 0) {
         gameOver();
         return;
-    }
-    if (type === 'come') {
     }
     buttonPosition(playerRoll);
     resetGame();
@@ -239,11 +240,12 @@ function makeCome() {
     playerMoney -= comeAmount;
     secondaryBetList.push(new SecondaryBet(1, comeAmount));
     moneyChange(comeAmount);
+    betDialogElement.disabled = true;
+    comeButtonElement.disabled = true;
     return;
 }
 
 function makePlace(num) {
-    console.log(`point open, ${num} was clicked`);
     placeDialogAmount.setAttribute('max', playerMoney);
     placeDialog.showModal();
     placeDialogCancel.addEventListener('click', () => {
@@ -258,7 +260,7 @@ function makePlace(num) {
         } else {
             lastPlayerMoney = playerMoney;
             playerMoney -= placeAmount;
-            secondaryBetList.push(new SecondaryBet(num, placeDialogAmount.value));
+            secondaryBetList.push(new SecondaryBet(num, placeAmount));
             moneyChange(placeAmount);
             placeDialog.close();
         }
@@ -320,6 +322,7 @@ function displayMessage(str) {
 
 function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
+    const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`
     if (pointOpen === false) {
         displayMessage(PLACENOPOINT);
         return;
@@ -375,15 +378,18 @@ let firstViewed = true;
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
 const LOADGAME = 'Loading not yet implemented';
-const DICEROLLED = `You rolled ${playerRoll}`
-const SHOWPOINT = `Your point is ${playerPoint}`
-const NOACTION = 'No action, roll again'
-const WIN = 'You win!'
-const LOSE = 'You lose'
-const INVALIDBET = 'Please make a valid place bet'
-const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`
-const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`
-const PLACEONPOINT = 'You cannot place on the current point'
+const DICEROLLED = `You rolled ${playerRoll}`;
+const SHOWPOINT = `Your point is ${playerPoint}`;
+const NOACTION = 'No action, roll again';
+const PRIMARYWIN = `The point of ${playerPoint} was rolled, you win!`;
+const PRIMARYLOSE = `7 was rolled, ${playerPoint} missed and you lose`;
+const SECONDARYWIN = `win placeholder`;
+const SECONDARYLOSE = `lose placeholder`;
+const INVALIDBET = 'Please make a valid place bet';
+const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
+const PLACEONPOINT = 'You cannot place on the current point';
+const PRIMARY = 'primary';
+const SECONDARY = 'secondary';
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
@@ -423,7 +429,7 @@ document.querySelector('#save-game').addEventListener('click', saveGame);
 rollButtonElement.addEventListener('click', checkGameState);
 betButtonElement.addEventListener('click', makeBet);
 clickBoardNumber.addEventListener('click', boardClick);
-// comeButtonElement.addEventListener('click', makeCome);
+comeButtonElement.addEventListener('click', makeCome);
 
 for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
