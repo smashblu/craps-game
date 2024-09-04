@@ -274,7 +274,7 @@ class SecondaryBet {
 }
 
 function gameOver() {
-    displayMessage(`You are bankrupt! Please choose 'place-accept' from the menu to play again`);
+    displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
     playerRoll = 1;
     buttonPosition(playerRoll);
     buttonStates();
