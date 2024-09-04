@@ -11,7 +11,7 @@ function newGame() {
     playerMoney = 100;
     moneyChange(0);
     resetGame();
-    displayMessage('New game started');
+    displayMessage(NEWGAME);
     return;
 }
 
@@ -26,14 +26,14 @@ function resetGame() {
 }
 
 function saveGame() {
-    displayMessage('Saving not yet implemented');
+    displayMessage(SAVEGAME);
     offButton.style.visibility = 'hidden';
     onButton.style.left = '315px'; // Table border: 15px, square: 230px, mid: 85px
     return;
 }
 
 function loadGame() {
-    displayMessage('Loading not yet implemented');
+    displayMessage(LOADGAME);
     offButton.style.visibility = 'visible';
     onButton.style.left = '85px';
     return;
@@ -64,7 +64,7 @@ function buttonStates() {
 async function firstRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    displayMessage(`You rolled ${playerRoll}`);
+    displayMessage(DICEROLLED);
     if (playerRoll === 7 || playerRoll === 11) {
         playerWin();
         return;
@@ -76,7 +76,7 @@ async function firstRoll() {
     playerPoint = playerRoll;
     pointOpen = true;
     buttonPosition(playerRoll);
-    displayMessage(`Your point is ${playerPoint}`);
+    displayMessage(SHOWPOINT);
     buttonStates();
     return;
 }
@@ -84,7 +84,7 @@ async function firstRoll() {
 async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    displayMessage(`You rolled ${playerRoll}`);
+    displayMessage(DICEROLLED);
     if (secondaryBetList.length !== 0) {
         secondaryRoll(playerRoll);
     }
@@ -96,7 +96,7 @@ async function gameRoll() {
         playerLose();
         return;
     }
-    displayMessage('No action, roll again');
+    displayMessage(NOACTION);
     return;
 }
 
@@ -192,7 +192,7 @@ function chipChange(loc, color) {
 }
 
 function playerWin(type) {
-    displayMessage('You win!');
+    displayMessage(WIN);
     if (type === 'come') {
     }
     lastPlayerMoney = playerMoney;
@@ -203,7 +203,7 @@ function playerWin(type) {
 }
 
 function playerLose(type) {
-    displayMessage('You lose')
+    displayMessage(LOSE)
     if (playerMoney === 0) {
         gameOver();
         return;
@@ -254,7 +254,7 @@ function makePlace(num) {
         placeAmount = parseInt(placeAmount);
         if (validateBet(placeAmount) === false) {
             placeDialog.close();
-            displayMessage('Please make a valid place bet');
+            displayMessage(INVALIDBET);
         } else {
             lastPlayerMoney = playerMoney;
             playerMoney -= placeAmount;
@@ -274,7 +274,7 @@ class SecondaryBet {
 }
 
 function gameOver() {
-    displayMessage(`You are bankrupt! Please choose 'New Game' from the menu to play again`);
+    displayMessage(BANKRUPT);
     playerRoll = 1;
     buttonPosition(playerRoll);
     buttonStates();
@@ -321,11 +321,11 @@ function displayMessage(str) {
 function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
     if (pointOpen === false) {
-        displayMessage(`You cannot place on ${numClicked} because no point is open`);
+        displayMessage(PLACENOPOINT);
         return;
     }
     if (numClicked === playerPoint) {
-        displayMessage('You cannot place on the current point');
+        displayMessage(PLACEONPOINT);
         return;
     }
     makePlace(numClicked);
@@ -334,7 +334,7 @@ function boardClick(e) {
 
 function validateBet(betAmount) {
     if (isNaN(betAmount) || betAmount > playerMoney || betAmount < 1) {
-        displayMessage('Please insert valid bet');
+        displayMessage(INVALIDBET);
         betAmount = 0;
         return false;
     }
@@ -371,6 +371,19 @@ let comeAmount = 0;
 let placeAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
+
+const NEWGAME = 'New game started';
+const SAVEGAME = 'Saving not yet implemented';
+const LOADGAME = 'Loading not yet implemented';
+const DICEROLLED = `You rolled ${playerRoll}`
+const SHOWPOINT = `Your point is ${playerPoint}`
+const NOACTION = 'No action, roll again'
+const WIN = 'You win!'
+const LOSE = 'You lose'
+const INVALIDBET = 'Please make a valid place bet'
+const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`
+const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`
+const PLACEONPOINT = 'You cannot place on the current point'
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
