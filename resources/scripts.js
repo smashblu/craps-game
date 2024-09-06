@@ -109,26 +109,35 @@ function checkGameState() {
     return;
 }
 
-/* function comeRoll(roll) {
+function secondaryRoll(roll) {
+    const betsToDelete = [];
     for (let i = 0; i < secondaryBetList.length; i++) {
-        if (roll === 7 || roll === 11) {
-            playerWin('come');
-        }
-        if (roll === 2 || roll === 3 || roll === 12) {
-            playerLose('come');
-        }
-        if (secondaryBetList[i].point === 1) {
-            secondaryBetList[i].point = roll;
-        }
-        if (secondaryBetList[i].point === roll) {
-            playerWin('come');
+        const currentPoint = secondaryBetList[i].point;
+        const currentBet = secondaryBetList[i];
+        if (currentPoint === 1) {
+            if (roll === 7 || roll === 11) {
+                betsToDelete.push(currentBet);
+                playerWin(SECONDARY);
+            } else if (roll === 2 || roll === 3 || roll === 12) {
+                betsToDelete.push(currentBet);
+                playerLose(SECONDARY);
+            } else {
+                currentPoint = roll;
+            }
+        } else {
+            if (roll === 7) {
+                betsToDelete.push(currentBet);
+                playerLose(SECONDARY);
+            } else if (currentPoint === roll) {
+                betsToDelete.push(currentBet);
+                playerWin(SECONDARY);
+            } else {
+                // Placeholder, prefer different notification method
+                displayMessage(NOACTION);
+            }
         }
     }
-    return;
-} */
-
-function secondaryRoll(roll) {
-    console.log('sec', roll);
+    removeBets(betsToDelete);
     return;
 }
 
@@ -190,7 +199,9 @@ function playerWin(type, amount) {
     if (type === SECONDARY) {
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
-        console.log('Pay bet, delete from array, send msg');
+        displayMessage(SECONDARYWIN);
+        moneyChange(0);
+        return;
     }
     displayMessage(PRIMARYWIN);
     lastPlayerMoney = playerMoney;
@@ -203,8 +214,9 @@ function playerWin(type, amount) {
 function playerLose(type, amount) {
     if (type === SECONDARY) {
         lastPlayerMoney = playerMoney;
-        playerMoney += (amount * 2);
-        console.log('Take bet, delete from array, send msg');
+        displayMessage(SECONDARYLOSE);
+        moneyChange(0);
+        return;
     }
     displayMessage(PRIMARYLOSE)
     if (playerMoney === 0) {
@@ -273,6 +285,10 @@ class SecondaryBet {
         this.point = point;
         this.amount = amount;
     }
+}
+
+function removeBets(array) {
+    // Find way to remove correct bets in loop
 }
 
 function gameOver() {
@@ -374,6 +390,7 @@ let comeAmount = 0;
 let placeAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
+let secondaryBetList = [];
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
@@ -416,7 +433,6 @@ const placeDialog = document.querySelector('dialog');
 const placeDialogAmount = document.getElementById('place-amount');
 const placeDialogCancel = document.getElementById('place-cancel');
 const placeDialogAccept = document.getElementById('place-accept');
-const secondaryBetList = [];
 
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
