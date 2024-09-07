@@ -70,7 +70,7 @@ async function firstRoll() {
         return;
     }
     if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
-        playerLose(PRIMARY, betAmount);
+        playerLose(PRIMARY);
         return;
     }
     playerPoint = playerRoll;
@@ -93,7 +93,7 @@ async function gameRoll() {
         return;
     }
     if (playerRoll === 7) {
-        playerLose(PRIMARY, betAmount);
+        playerLose(PRIMARY);
         return;
     }
     displayMessage(NOACTION);
@@ -110,34 +110,36 @@ function checkGameState() {
 }
 
 function secondaryRoll(roll) {
-    const betsToDelete = [];
     for (let i = 0; i < secondaryBetList.length; i++) {
         const currentPoint = secondaryBetList[i].point;
-        const currentBet = secondaryBetList[i];
+        const currentAmount = secondaryBetList[i].amount;
         if (currentPoint === 1) {
             if (roll === 7 || roll === 11) {
-                betsToDelete.push(currentBet);
-                playerWin(SECONDARY);
+                removeBet(i);
+                i--;
+                playerWin(SECONDARY, currentAmount);
             } else if (roll === 2 || roll === 3 || roll === 12) {
-                betsToDelete.push(currentBet);
+                removeBet(i);
+                i--;
                 playerLose(SECONDARY);
             } else {
                 currentPoint = roll;
             }
         } else {
             if (roll === 7) {
-                betsToDelete.push(currentBet);
+                removeBet(i);
+                i--;
                 playerLose(SECONDARY);
             } else if (currentPoint === roll) {
-                betsToDelete.push(currentBet);
-                playerWin(SECONDARY);
+                removeBet(i);
+                i--;
+                playerWin(SECONDARY, currentAmount);
             } else {
                 // Placeholder, prefer different notification method
                 displayMessage(NOACTION);
             }
         }
     }
-    removeBets(betsToDelete);
     return;
 }
 
@@ -211,7 +213,7 @@ function playerWin(type, amount) {
     return;
 }
 
-function playerLose(type, amount) {
+function playerLose(type) {
     if (type === SECONDARY) {
         lastPlayerMoney = playerMoney;
         displayMessage(SECONDARYLOSE);
@@ -287,8 +289,17 @@ class SecondaryBet {
     }
 }
 
-function removeBets(array) {
-    // Find way to remove correct bets in loop
+function removeBet(index) {
+    if (index === 0) {
+        secondaryBetList = secondaryBetList.slice(1);
+    } else if (index === secondaryBetList.length) {
+        secondaryBetList = secondaryBetList.slice(0, -1);
+    } else {
+        const halfBefore = secondaryBetList.slice(0, index);
+        const halfAfter = secondaryBetList.slice(index + 1);
+        secondaryBetList = halfBefore.concat(halfAfter);
+    }
+    return;
 }
 
 function gameOver() {
