@@ -208,6 +208,7 @@ function playerWin(type, amount) {
     displayMessage(PRIMARYWIN);
     lastPlayerMoney = playerMoney;
     playerMoney += (amount * 2);
+    pushSecondaryBets();
     resetGame();
     moneyChange(0);
     return;
@@ -245,7 +246,7 @@ function makeBet() {
 }
 
 function makeCome() {
-    comeAmount = betDialogElement.value;
+    let comeAmount = betDialogElement.value;
     comeAmount = parseInt(comeAmount);
     if (validateBet(comeAmount) === false) {
         return;
@@ -266,7 +267,7 @@ function makePlace(num) {
         placeDialog.close()
     });
     placeDialogAccept.addEventListener('click', () => {
-        placeAmount = placeDialogAmount.value;
+        let placeAmount = placeDialogAmount.value;
         placeAmount = parseInt(placeAmount);
         if (validateBet(placeAmount) === false) {
             placeDialog.close();
@@ -298,6 +299,18 @@ function removeBet(index) {
         const halfBefore = secondaryBetList.slice(0, index);
         const halfAfter = secondaryBetList.slice(index + 1);
         secondaryBetList = halfBefore.concat(halfAfter);
+    }
+    return;
+}
+
+function pushSecondaryBets() {
+    if (secondaryBetList.length !== 0) {
+        for (let i = 0; i < secondaryBetList.length; i++) {
+            playerMoney += secondaryBetList[i].amount;
+        }
+        for (let i = 0; i < secondaryBetList.length; i++) {
+            removeBet(i);
+        }
     }
     return;
 }
@@ -397,8 +410,6 @@ let playerRoll = 1;
 let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
-let comeAmount = 0;
-let placeAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
 let secondaryBetList = [];
