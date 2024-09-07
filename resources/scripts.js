@@ -111,29 +111,28 @@ function checkGameState() {
 
 function secondaryRoll(roll) {
     for (let i = 0; i < secondaryBetList.length; i++) {
-        const currentPoint = secondaryBetList[i].point;
-        const currentAmount = secondaryBetList[i].amount;
-        if (currentPoint === 1) {
+        const currentBet = secondaryBetList[i];
+        if (currentBet.point === 1) {
             if (roll === 7 || roll === 11) {
                 removeBet(i);
                 i--;
-                playerWin(SECONDARY, currentAmount);
+                playerWin(SECONDARY, currentBet.amount);
             } else if (roll === 2 || roll === 3 || roll === 12) {
                 removeBet(i);
                 i--;
                 playerLose(SECONDARY);
             } else {
-                currentPoint = roll;
+                currentBet.point = roll;
             }
         } else {
             if (roll === 7) {
                 removeBet(i);
                 i--;
                 playerLose(SECONDARY);
-            } else if (currentPoint === roll) {
+            } else if (currentBet.point === roll) {
                 removeBet(i);
                 i--;
-                playerWin(SECONDARY, currentAmount);
+                playerWin(SECONDARY, currentBet.amount);
             } else {
                 // Placeholder, prefer different notification method
                 displayMessage(NOACTION);
@@ -261,6 +260,8 @@ function makeCome() {
 }
 
 function makePlace(num) {
+    // Error found:
+    // When making a second place bet, first bet is repeated
     placeDialogAmount.setAttribute('max', playerMoney);
     placeDialog.showModal();
     placeDialogCancel.addEventListener('click', () => {
