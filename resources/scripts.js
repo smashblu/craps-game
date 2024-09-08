@@ -185,12 +185,51 @@ function buttonPosition(loc) {
 }
 
 function chipChange(loc, color) {
+    // To implement in next PR
     switch (loc) {
         case 1:
             chipContainerElement.style.visibility = 'hidden';
             break;
-        case 2:
+        case 4:
             chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '85px';
+            break;
+        case 5:
+            chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '315px';
+            break;
+        case 6:
+            chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '545px';
+            break;
+        case 8:
+            chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '775px';
+            break;
+        case 9:
+            chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '1005px';
+            break;
+        case 10:
+            chipContainerElement.style.visibility = 'visible';
+            chipContainerElement.style.left = '1235px';
+            break;
+    }
+    switch (true) {
+        case (color > 0):
+            // White
+            break;
+        case (color >= 5):
+            // Red
+            break;
+        case (color >= 25):
+            // Green
+            break;
+        case (color >= 100):
+            // Black
+            break;
+        case (color >= 500):
+            // Orange
             break;
     }
     return;
