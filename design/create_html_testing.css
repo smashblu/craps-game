@@ -1,3 +1,7 @@
-div {
-	color: black;
+.static {
+	color: blue;
+}
+
+.dynamic {
+	color: red;
 }
