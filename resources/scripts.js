@@ -402,7 +402,14 @@ function displayMessage(str) {
 
 function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
-    const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`
+    const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`;
+    const PLACEAGAIN = `You have already made a bet on ${numClicked}`;
+    for (let i = 0; i < secondaryBetList.length; i++) {
+        if (secondaryBetList[i] === numClicked) {
+            displayMessage(PLACEAGAIN);
+            return;
+        }
+    }
     if (pointOpen === false) {
         displayMessage(PLACENOPOINT);
         return;
