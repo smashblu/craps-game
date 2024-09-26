@@ -21,6 +21,24 @@ function removeObj(id) {
         document.getElementById(`obj${id}`).remove();
 }
 
+function popObj(obj) {
+        for (const prop in obj) {
+                if (Object.hasOwn(obj, prop)) {
+                        return false;
+                }
+        }
+        return true;
+}
+
+function boolTest() {
+        if (popObj(testObj) === true) {
+                boolSwitch = 'no content';
+                return;
+        }
+        boolSwitch = 'has content';
+        return;
+}
+
 function chooseColor(amount) {
         let chipColor = 0;
         switch (amount) {
@@ -42,6 +60,8 @@ function chooseColor(amount) {
 
 let numOfObj = 0;
 let betAmount = 2;
+let testObj = {};
+let boolSwitch = 'none';
 const objArray = [];
 const iterateButton = document.getElementById('iterate');
 const firstObj = document.getElementById('first');

@@ -85,7 +85,10 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(DICEROLLED);
-    if (secondaryBetList.length !== 0) {
+    //if (secondaryBetList.length !== 0) {
+    //    secondaryRoll(playerRoll);
+    //}
+    if (testObjPop(secondaryBetListO) === false) {
         secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
@@ -109,37 +112,41 @@ function checkGameState() {
     return;
 }
 
+//function secondaryRoll(roll) {
+//    for (let i = 0; i < secondaryBetList.length; i++) {
+//        const currentBet = secondaryBetList[i];
+//        if (currentBet.point === 1) {
+//            if (roll === 7 || roll === 11) {
+//                removeBet(i);
+//                i--;
+//                playerWin(SECONDARY, currentBet.amount);
+//            } else if (roll === 2 || roll === 3 || roll === 12) {
+//                removeBet(i);
+//                i--;
+//                playerLose(SECONDARY);
+//            } else {
+//                currentBet.point = roll;
+//            }
+//        } else {
+//            if (roll === 7) {
+//                removeBet(i);
+//                i--;
+//                playerLose(SECONDARY);
+//            } else if (currentBet.point === roll) {
+//                removeBet(i);
+//                i--;
+//                playerWin(SECONDARY, currentBet.amount);
+//            } else {
+//                // Placeholder, prefer different notification method
+//                displayMessage(NOACTION);
+//            }
+//        }
+//    }
+//    return;
+//}
+
 function secondaryRoll(roll) {
-    for (let i = 0; i < secondaryBetList.length; i++) {
-        const currentBet = secondaryBetList[i];
-        if (currentBet.point === 1) {
-            if (roll === 7 || roll === 11) {
-                removeBet(i);
-                i--;
-                playerWin(SECONDARY, currentBet.amount);
-            } else if (roll === 2 || roll === 3 || roll === 12) {
-                removeBet(i);
-                i--;
-                playerLose(SECONDARY);
-            } else {
-                currentBet.point = roll;
-            }
-        } else {
-            if (roll === 7) {
-                removeBet(i);
-                i--;
-                playerLose(SECONDARY);
-            } else if (currentBet.point === roll) {
-                removeBet(i);
-                i--;
-                playerWin(SECONDARY, currentBet.amount);
-            } else {
-                // Placeholder, prefer different notification method
-                displayMessage(NOACTION);
-            }
-        }
-    }
-    return;
+    //
 }
 
 function buttonPosition(loc) {
@@ -292,6 +299,7 @@ function makeCome() {
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
     secondaryBetList.push(new SecondaryBet(1, comeAmount));
+    secondaryBetListO[1] = comeAmount;
     moneyChange(comeAmount);
     betDialogElement.disabled = true;
     comeButtonElement.disabled = true;
@@ -299,27 +307,9 @@ function makeCome() {
 }
 
 function makePlace(num) {
-    // Error found:
-    // When making a second place bet, first bet is repeated
     placeDialogAmount.setAttribute('max', playerMoney);
+    makePlaceNumClicked = num;
     placeDialog.showModal();
-    placeDialogCancel.addEventListener('click', () => {
-        placeDialog.close()
-    });
-    placeDialogAccept.addEventListener('click', () => {
-        let placeAmount = placeDialogAmount.value;
-        placeAmount = parseInt(placeAmount);
-        if (validateBet(placeAmount) === false) {
-            placeDialog.close();
-            displayMessage(INVALIDBET);
-        } else {
-            lastPlayerMoney = playerMoney;
-            playerMoney -= placeAmount;
-            secondaryBetList.push(new SecondaryBet(num, placeAmount));
-            moneyChange(placeAmount);
-            placeDialog.close();
-        }
-    });
     return;
 }
 
@@ -445,6 +435,15 @@ async function diceRoll() {
     return;
 }
 
+function testObjPop(obj) {
+    for (const prop in obj) {
+        if (Object.hasOwn(obj, prop)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
@@ -459,7 +458,9 @@ let playerPoint = 0;
 let betAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
+let makePlaceNumClicked = 0;
 let secondaryBetList = [];
+let secondaryBetListO = {};
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
@@ -517,6 +518,24 @@ rollButtonElement.addEventListener('click', checkGameState);
 betButtonElement.addEventListener('click', makeBet);
 clickBoardNumber.addEventListener('click', boardClick);
 comeButtonElement.addEventListener('click', makeCome);
+placeDialogCancel.addEventListener('click', () => {
+    placeDialog.close()
+});
+placeDialogAccept.addEventListener('click', () => {
+    let placeAmount = placeDialogAmount.value;
+    placeAmount = parseInt(placeAmount);
+    if (validateBet(placeAmount) === false) {
+        placeDialog.close();
+        displayMessage(INVALIDBET);
+    } else {
+        lastPlayerMoney = playerMoney;
+        playerMoney -= placeAmount;
+        secondaryBetList.push(new SecondaryBet(makePlaceNumClicked, placeAmount));
+        secondaryBetListO[makePlaceNumClicked] = placeAmount;
+        moneyChange(placeAmount);
+        placeDialog.close();
+    }
+});
 
 for (let i = 0; i < newGameButtons.length; i++) {
     newGameButtons[i].addEventListener('click', newGame);
