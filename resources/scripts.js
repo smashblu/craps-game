@@ -66,11 +66,11 @@ async function firstRoll() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     displayMessage(DICEROLLED);
     if (playerRoll === 7 || playerRoll === 11) {
-        playerWin(PRIMARY, betAmount);
+        playerWin(true, betAmount);
         return;
     }
     if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
-        playerLose(PRIMARY);
+        playerLose(true);
         return;
     }
     playerPoint = playerRoll;
@@ -92,11 +92,11 @@ async function gameRoll() {
         secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
-        playerWin(PRIMARY, betAmount);
+        playerWin(true, betAmount);
         return;
     }
     if (playerRoll === 7) {
-        playerLose(PRIMARY);
+        playerLose(true);
         return;
     }
     displayMessage(NOACTION);
@@ -146,7 +146,21 @@ function checkGameState() {
 //}
 
 function secondaryRoll(roll) {
-    //
+    if (secondaryBetListO[1] > 0) {
+        if (roll === 7 || roll === 11) {
+            playerWin(false, secondaryBetListO[1]);
+            delete secondaryBetListO[1];
+            // Summary function
+        } else if (roll === 2 || roll === 3 || roll === 12) {
+            playerLose(false);
+            delete secondaryBetListO[1];
+            // Summary function
+        } else {
+            secondaryBetListO[roll] = secondaryBetListO[1];
+            delete secondaryBetListO[1];
+        }
+    }
+    // Logic to cover all bets on specific numbers
 }
 
 function buttonPosition(loc) {
@@ -242,8 +256,8 @@ function chipChange(loc, color) {
     return;
 }
 
-function playerWin(type, amount) {
-    if (type === SECONDARY) {
+function playerWin(isprimary, amount) {
+    if (isprimary === false) {
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
         displayMessage(SECONDARYWIN);
@@ -259,8 +273,8 @@ function playerWin(type, amount) {
     return;
 }
 
-function playerLose(type) {
-    if (type === SECONDARY) {
+function playerLose(isprimary) {
+    if (isprimary === false) {
         lastPlayerMoney = playerMoney;
         displayMessage(SECONDARYLOSE);
         moneyChange(0);
@@ -383,6 +397,10 @@ async function moneyChange(newBet) {
     return;
 }
 
+function buildSummary() {
+    //
+}
+
 function displayMessage(str) {
     document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
@@ -459,6 +477,7 @@ let betAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
 let makePlaceNumClicked = 0;
+let rollSummary = null;
 let secondaryBetList = [];
 let secondaryBetListO = {};
 
@@ -477,8 +496,6 @@ const SECONDARYLOSE = `lose placeholder`;
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
-const PRIMARY = 'primary';
-const SECONDARY = 'secondary';
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
