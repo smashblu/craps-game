@@ -64,19 +64,21 @@ function buttonStates() {
 async function firstRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    displayMessage(DICEROLLED);
+    buildSummary(DICEROLLED);
     if (playerRoll === 7 || playerRoll === 11) {
-        playerWin(true, betAmount);
+        payOut(true, true, betAmount);
         return;
     }
     if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
-        playerLose(true);
+        payOut(true, false);
         return;
     }
     playerPoint = playerRoll;
     pointOpen = true;
     buttonPosition(playerRoll);
-    displayMessage(SHOWPOINT);
+    buildSummary(SHOWPOINT);
+    displayMessage(rollSummary);
+    rollSummary = null;
     buttonStates();
     return;
 }
@@ -84,7 +86,7 @@ async function firstRoll() {
 async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    displayMessage(DICEROLLED);
+    buildSummary(DICEROLLED);
     //if (secondaryBetList.length !== 0) {
     //    secondaryRoll(playerRoll);
     //}
@@ -92,14 +94,16 @@ async function gameRoll() {
         secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
-        playerWin(true, betAmount);
+        payOut(true, true, betAmount);
         return;
     }
     if (playerRoll === 7) {
-        playerLose(true);
+        payOut(true, false);
         return;
     }
-    displayMessage(NOACTION);
+    buildSummary(NOACTION);
+    displayMessage(rollSummary);
+    rollSummary = null;
     buttonStates();
     return;
 }
@@ -146,21 +150,36 @@ function checkGameState() {
 //}
 
 function secondaryRoll(roll) {
+    if (roll === 7) {
+        for (let i = 4; i < 11; i++) {
+            if (secondaryBetListO[i] > 0) {
+                buildSummary(SECONDARYLOSE, i);
+                payOut(false, false);
+                delete secondaryBetListO[i];
+            }
+        }
+    } else {
+        if (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10) {
+            buildSummary(PLACEWIN, roll);
+            payOut(false, true, secondaryBetListO[roll]);
+            delete secondaryBetListO[roll];
+        }
+    }
     if (secondaryBetListO[1] > 0) {
         if (roll === 7 || roll === 11) {
-            playerWin(false, secondaryBetListO[1]);
+            buildSummary(COMEWIN);
+            payOut(false, true, secondaryBetListO[1]);
             delete secondaryBetListO[1];
-            // Summary function
         } else if (roll === 2 || roll === 3 || roll === 12) {
-            playerLose(false);
+            buildSummary(COMELOSE);
+            payOut(false, false);
             delete secondaryBetListO[1];
-            // Summary function
         } else {
+            buildSummary(COMESET, roll);
             secondaryBetListO[roll] = secondaryBetListO[1];
             delete secondaryBetListO[1];
         }
     }
-    // Logic to cover all bets on specific numbers
 }
 
 function buttonPosition(loc) {
@@ -256,35 +275,30 @@ function chipChange(loc, color) {
     return;
 }
 
-function playerWin(isprimary, amount) {
+function payOut(isprimary, win, amount) {
     if (isprimary === false) {
+        if (win === true) {
+            playerMoney += (amount * 2);
+            return;
+        }
+        return;
+    }
+    if (win === true) {
+        buildSummary(PRIMARYWIN);
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
-        displayMessage(SECONDARYWIN);
+        pushSecondaryBets();
+        resetGame();
         moneyChange(0);
         return;
     }
-    displayMessage(PRIMARYWIN);
-    lastPlayerMoney = playerMoney;
-    playerMoney += (amount * 2);
-    pushSecondaryBets();
-    resetGame();
-    moneyChange(0);
-    return;
-}
-
-function playerLose(isprimary) {
-    if (isprimary === false) {
-        lastPlayerMoney = playerMoney;
-        displayMessage(SECONDARYLOSE);
-        moneyChange(0);
-        return;
-    }
-    displayMessage(PRIMARYLOSE)
+    buildSummary(PRIMARYLOSE);
     if (playerMoney === 0) {
         gameOver();
         return;
     }
+    displayMessage(rollSummary);
+    rollSummary = null;
     buttonPosition(playerRoll);
     resetGame();
     moneyChange(0);
@@ -397,14 +411,30 @@ async function moneyChange(newBet) {
     return;
 }
 
-function buildSummary() {
-    //
+function buildSummary(msg, rolled) {
+    if (msg === SECONDARYLOSE) {
+        // catalog all lost bets
+        rollSummary += rolled;
+    }
+    rollSummary = rollSummary + ' and' + msg;
 }
+const SECONDARYLOSE = 'placeholder';
+const PLACEWIN = 'placeholder';
+const COMEWIN = 'placeholder';
+const COMELOSE = 'placeholder';
+const COMESET = 'placeholder';
 
 function displayMessage(str) {
-    document.getElementById('current-message').innerHTML = str;
+    if (rollSummary === null) {
+        document.getElementById('current-message').innerHTML = str;
+    } else if (str === NOACTION) {
+        document.getElementById('current-message').innerHTML = SECONDARYNOACTION + ' ' + rollSummary;
+    } else {
+        document.getElementById('current-message').innerHTML = str + ' ' + rollSummary;
+    }
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
+    rollSummary = null;
     return;
 }
 
@@ -487,12 +517,11 @@ const LOADGAME = 'Loading not yet implemented';
 const DICEROLLED = `You rolled ${playerRoll}`;
 const SHOWPOINT = `Your point is ${playerPoint}`;
 const NOACTION = 'No action, roll again';
+const SECONDARYNOACTION = 'No action on point';
 const NOPOINTWIN = `${playerRoll}, win on pass line!`;
 const NOPOINTLOSE = `${playerRoll}, craps, you lose`;
 const PRIMARYWIN = `The point of ${playerPoint} was rolled, you win!`;
 const PRIMARYLOSE = `7 was rolled, ${playerPoint} missed and you lose`;
-const SECONDARYWIN = `win placeholder`;
-const SECONDARYLOSE = `lose placeholder`;
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
