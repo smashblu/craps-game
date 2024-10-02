@@ -87,10 +87,7 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED);
-    //if (secondaryBetList.length !== 0) {
-    //    secondaryRoll(playerRoll);
-    //}
-    if (testObjPop(secondaryBetListO) === false) {
+    if (testObjPop(secondaryBetObj) === false) {
         secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
@@ -116,68 +113,35 @@ function checkGameState() {
     return;
 }
 
-//function secondaryRoll(roll) {
-//    for (let i = 0; i < secondaryBetList.length; i++) {
-//        const currentBet = secondaryBetList[i];
-//        if (currentBet.point === 1) {
-//            if (roll === 7 || roll === 11) {
-//                removeBet(i);
-//                i--;
-//                playerWin(SECONDARY, currentBet.amount);
-//            } else if (roll === 2 || roll === 3 || roll === 12) {
-//                removeBet(i);
-//                i--;
-//                playerLose(SECONDARY);
-//            } else {
-//                currentBet.point = roll;
-//            }
-//        } else {
-//            if (roll === 7) {
-//                removeBet(i);
-//                i--;
-//                playerLose(SECONDARY);
-//            } else if (currentBet.point === roll) {
-//                removeBet(i);
-//                i--;
-//                playerWin(SECONDARY, currentBet.amount);
-//            } else {
-//                // Placeholder, prefer different notification method
-//                displayMessage(NOACTION);
-//            }
-//        }
-//    }
-//    return;
-//}
-
 function secondaryRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
-            if (secondaryBetListO[i] > 0) {
+            if (secondaryBetObj[i] > 0) {
                 buildSummary(SECONDARYLOSE, i);
                 payOut(false, false);
-                delete secondaryBetListO[i];
+                delete secondaryBetObj[i];
             }
         }
     } else {
         if (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10) {
             buildSummary(PLACEWIN, roll);
-            payOut(false, true, secondaryBetListO[roll]);
-            delete secondaryBetListO[roll];
+            payOut(false, true, secondaryBetObj[roll]);
+            delete secondaryBetObj[roll];
         }
     }
-    if (secondaryBetListO[1] > 0) {
+    if (secondaryBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN);
-            payOut(false, true, secondaryBetListO[1]);
-            delete secondaryBetListO[1];
+            payOut(false, true, secondaryBetObj[1]);
+            delete secondaryBetObj[1];
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE);
             payOut(false, false);
-            delete secondaryBetListO[1];
+            delete secondaryBetObj[1];
         } else {
             buildSummary(COMESET, roll);
-            secondaryBetListO[roll] = secondaryBetListO[1];
-            delete secondaryBetListO[1];
+            secondaryBetObj[roll] = secondaryBetObj[1];
+            delete secondaryBetObj[1];
         }
     }
 }
@@ -279,8 +243,10 @@ function payOut(isprimary, win, amount) {
     if (isprimary === false) {
         if (win === true) {
             playerMoney += (amount * 2);
+            totalBets -= amount;
             return;
         }
+        totalBets -= amount;
         return;
     }
     if (win === true) {
@@ -326,8 +292,7 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    secondaryBetList.push(new SecondaryBet(1, comeAmount));
-    secondaryBetListO[1] = comeAmount;
+    secondaryBetObj[1] = comeAmount;
     moneyChange(comeAmount);
     betDialogElement.disabled = true;
     comeButtonElement.disabled = true;
@@ -348,30 +313,19 @@ class SecondaryBet {
     }
 }
 
-function removeBet(index) {
-    if (index === 0) {
-        secondaryBetList = secondaryBetList.slice(1);
-    } else if (index === secondaryBetList.length) {
-        secondaryBetList = secondaryBetList.slice(0, -1);
-    } else {
-        const halfBefore = secondaryBetList.slice(0, index);
-        const halfAfter = secondaryBetList.slice(index + 1);
-        secondaryBetList = halfBefore.concat(halfAfter);
+function pushSecondaryBets() {
+    if (testObjPop(secondaryBetObj) === false) {
+        for (let i = 1; i < 11; i++) {
+            if (secondaryBetObj[i] > 0) {
+                playerMoney += secondaryBetObj[i];
+                totalBets -= secondaryBetObj[i];
+                delete secondaryBetObj[i];
+            }
+        }
     }
     return;
 }
 
-function pushSecondaryBets() {
-    if (secondaryBetList.length !== 0) {
-        for (let i = 0; i < secondaryBetList.length; i++) {
-            playerMoney += secondaryBetList[i].amount;
-        }
-        for (let i = 0; i < secondaryBetList.length; i++) {
-            removeBet(i);
-        }
-    }
-    return;
-}
 
 function gameOver() {
     displayMessage(BANKRUPT);
@@ -416,21 +370,24 @@ function buildSummary(msg, rolled) {
         // catalog all lost bets
         rollSummary += rolled;
     }
-    rollSummary = rollSummary + ' and' + msg;
+    rollSummary = `${rollSummary} and ${msg} ${rolled}`;
 }
-const SECONDARYLOSE = 'placeholder';
+const SECONDARYLOSE = 'you lost your bet on';
 const PLACEWIN = 'placeholder';
 const COMEWIN = 'placeholder';
 const COMELOSE = 'placeholder';
-const COMESET = 'placeholder';
+const COMESET = 'place set on';
 
 function displayMessage(str) {
     if (rollSummary === null) {
-        document.getElementById('current-message').innerHTML = str;
+        //document.getElementById('current-message').innerHTML = str;
+        'test: null';
     } else if (str === NOACTION) {
-        document.getElementById('current-message').innerHTML = SECONDARYNOACTION + ' ' + rollSummary;
+        //document.getElementById('current-message').innerHTML = `${SECONDARYNOACTION} ${rollSummary}`;
+        'test: no action';
     } else {
-        document.getElementById('current-message').innerHTML = str + ' ' + rollSummary;
+        //document.getElementById('current-message').innerHTML = `${str} ${rollSummary}`;
+        'test: summary';
     }
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
@@ -442,11 +399,9 @@ function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
     const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`;
     const PLACEAGAIN = `You have already made a bet on ${numClicked}`;
-    for (let i = 0; i < secondaryBetList.length; i++) {
-        if (secondaryBetList[i] === numClicked) {
-            displayMessage(PLACEAGAIN);
-            return;
-        }
+    if (secondaryBetObj[numClicked] > 0) {
+        displayMessage(PLACEAGAIN);
+        return;
     }
     if (pointOpen === false) {
         displayMessage(PLACENOPOINT);
@@ -508,8 +463,7 @@ let totalBets = 0;
 let firstViewed = true;
 let makePlaceNumClicked = 0;
 let rollSummary = null;
-let secondaryBetList = [];
-let secondaryBetListO = {};
+let secondaryBetObj = {};
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
@@ -576,8 +530,7 @@ placeDialogAccept.addEventListener('click', () => {
     } else {
         lastPlayerMoney = playerMoney;
         playerMoney -= placeAmount;
-        secondaryBetList.push(new SecondaryBet(makePlaceNumClicked, placeAmount));
-        secondaryBetListO[makePlaceNumClicked] = placeAmount;
+        secondaryBetObj[makePlaceNumClicked] = placeAmount;
         moneyChange(placeAmount);
         placeDialog.close();
     }
