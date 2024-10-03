@@ -366,11 +366,18 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
+    if (rollSummary === null) {
+        rollSummary = msg;
+        console.log(rollSummary);
+    } else {
+        rollSummary += `, ${msg}`;
+        console.log(rollSummary);
+    }
     if (msg === SECONDARYLOSE) {
         // catalog all lost bets
         rollSummary += rolled;
     }
-    rollSummary = `${rollSummary} and ${msg} ${rolled}`;
+    return;
 }
 const SECONDARYLOSE = 'you lost your bet on';
 const PLACEWIN = 'placeholder';
@@ -380,14 +387,12 @@ const COMESET = 'place set on';
 
 function displayMessage(str) {
     if (rollSummary === null) {
-        //document.getElementById('current-message').innerHTML = str;
-        'test: null';
+        document.getElementById('current-message').innerHTML = str;
     } else if (str === NOACTION) {
         //document.getElementById('current-message').innerHTML = `${SECONDARYNOACTION} ${rollSummary}`;
-        'test: no action';
+        document.getElementById('current-message').innerHTML = 'no action';
     } else {
-        //document.getElementById('current-message').innerHTML = `${str} ${rollSummary}`;
-        'test: summary';
+        document.getElementById('current-message').innerHTML = `${str}, ${rollSummary}`;
     }
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
