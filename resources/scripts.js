@@ -70,7 +70,7 @@ async function firstRoll() {
         return;
     }
     if (playerRoll === 2 || playerRoll === 3 || playerRoll === 12) {
-        payOut(true, false);
+        payOut(true, false, 0);
         return;
     }
     playerPoint = playerRoll;
@@ -95,7 +95,7 @@ async function gameRoll() {
         return;
     }
     if (playerRoll === 7) {
-        payOut(true, false);
+        payOut(true, false, 0);
         return;
     }
     buildSummary(NOACTION);
@@ -118,12 +118,12 @@ function secondaryRoll(roll) {
         for (let i = 4; i < 11; i++) {
             if (secondaryBetObj[i] > 0) {
                 buildSummary(SECONDARYLOSE, i);
-                payOut(false, false);
+                payOut(false, false, 0);
                 delete secondaryBetObj[i];
             }
         }
     } else {
-        if (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10) {
+        if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
             buildSummary(PLACEWIN, roll);
             payOut(false, true, secondaryBetObj[roll]);
             delete secondaryBetObj[roll];
@@ -132,11 +132,11 @@ function secondaryRoll(roll) {
     if (secondaryBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN);
-            payOut(false, true, secondaryBetObj[1]);
+            payOut(false, true, (secondaryBetObj[1]));
             delete secondaryBetObj[1];
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE);
-            payOut(false, false);
+            payOut(false, false, 0);
             delete secondaryBetObj[1];
         } else {
             buildSummary(COMESET, roll);
