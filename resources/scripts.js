@@ -54,9 +54,11 @@ function buttonStates() {
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
     comeButtonElement.disabled = true;
+    secondaryBetsActive.innerHTML = '';
     if (pointOpen === true) {
         comeButtonElement.disabled = false;
         betDialogElement.disabled = false;
+        secondaryBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
     }
     return;
 }
@@ -152,6 +154,7 @@ function buttonPosition(loc) {
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
             onButton.style.left = '1475px';
+            secondaryBetsActive.innerHTML = '';
             pointOpen = false;
             break;
         case 4:
@@ -494,6 +497,7 @@ const betDialogElement = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
 const showRollElement = document.getElementById('show-roll')
 const rollDisplayElement = document.getElementById('roll-display')
+const secondaryBetsActive = document.getElementById('secondary-active');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const chipContainerElement = document.querySelector('.chip-container');
