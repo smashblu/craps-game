@@ -288,8 +288,7 @@ function makeBet() {
 }
 
 function makeCome() {
-    let comeAmount = betDialogElement.value;
-    comeAmount = parseInt(comeAmount);
+    const comeAmount = parseInt(betDialogElement.value);
     if (validateBet(comeAmount) === false) {
         return;
     }
@@ -366,7 +365,6 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
-    console.log(playerPoint);
     if (rollSummary === null) {
         rollSummary = msg;
     } else {
