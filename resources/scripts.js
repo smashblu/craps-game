@@ -342,9 +342,6 @@ async function moneyChange(newBet) {
     totalBets += newBet;
     playerMoneyElement.innerHTML = playerMoney;
     playerBetElement.innerHTML = totalBets;
-    if (playerMoney === lastPlayerMoney) {
-        return;
-    }
     if (playerMoney < lastPlayerMoney) {
         playerMoneyElement.style.transition = 'all 0.5s';
         playerMoneyElement.style.fontSize = '75%';
@@ -372,10 +369,8 @@ function buildSummary(msg, rolled) {
     console.log(playerPoint);
     if (rollSummary === null) {
         rollSummary = msg;
-        console.log(rollSummary);
     } else {
         rollSummary += `, ${msg}`;
-        console.log(rollSummary);
     }
     if (msg === SECONDARYLOSE) {
         // catalog all lost bets
@@ -383,17 +378,11 @@ function buildSummary(msg, rolled) {
     }
     return;
 }
-const SECONDARYLOSE = 'you lost your bet on';
-const PLACEWIN = 'placeholder';
-const COMEWIN = 'placeholder';
-const COMELOSE = 'placeholder';
-const COMESET = 'place set on';
 
 function displayMessage(str) {
     if (rollSummary === null) {
         document.getElementById('current-message').innerHTML = str;
     } else if (str === NOACTION) {
-        //document.getElementById('current-message').innerHTML = `${SECONDARYNOACTION} ${rollSummary}`;
         document.getElementById('current-message').innerHTML = 'no action';
     } else {
         document.getElementById('current-message').innerHTML = rollSummary;
@@ -488,6 +477,11 @@ const PRIMARYLOSE = `7 was rolled, ${playerPoint} missed and you lose`;
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
+const SECONDARYLOSE = 'The place bets have lost';
+const PLACEWIN = `Place bet on ${playerPoint}`;
+const COMEWIN = 'The last come bet has won!';
+const COMELOSE = 'The last come bet has lost';
+const COMESET = `The last come bet is placed on ${playerPoint}`
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
