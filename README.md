@@ -6,6 +6,8 @@
 
 ## Rules
 
+Can be moved to HTML
+
 ### Pregame
 
 The player starts the game with $100 and can bet any amount each roll. The player wins when `[win condition]`. The player loses if their money reaches $0.
