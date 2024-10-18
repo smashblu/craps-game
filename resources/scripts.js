@@ -369,6 +369,7 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
+    console.log(playerPoint);
     if (rollSummary === null) {
         rollSummary = msg;
         console.log(rollSummary);
@@ -395,7 +396,7 @@ function displayMessage(str) {
         //document.getElementById('current-message').innerHTML = `${SECONDARYNOACTION} ${rollSummary}`;
         document.getElementById('current-message').innerHTML = 'no action';
     } else {
-        document.getElementById('current-message').innerHTML = `${str}, ${rollSummary}`;
+        document.getElementById('current-message').innerHTML = rollSummary;
     }
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
