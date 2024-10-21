@@ -192,7 +192,8 @@ function buttonPosition(loc) {
 }
 
 function chipChange(loc, color) {
-    // To implement in next PR
+    // Refactor according to create_html_testing
+    // This will create and delete HTML objects as needed rather than change existing ones
     switch (loc) {
         case 1:
             chipContainerElement.style.visibility = 'hidden';
