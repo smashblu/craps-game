@@ -1,3 +1,14 @@
+html,
+body {
+    height: 100%;
+}
+
+.full-page {
+    overflow: hidden;
+    min-height: 100%;
+    min-width: 960px;
+}
+
 .header {
     background-color: #ffffff;
     overflow: visible;
@@ -17,13 +28,59 @@
     color: blue;
 }
 
-.gameboard, .about, .rules {
-    background-color: #548347
+.gameboard,
+.about,
+.rules {
+    background-color: #548347;
 }
 
 .gameboard {
     position: relative;
     z-index: 1;
+}
+
+.gameboard p {
+    margin-bottom: 0;
+}
+
+.player-money-display,
+.player-bet-display {
+    font-weight: bold;
+    font-size: 120%;
+    text-decoration: none;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+.player-money-display {
+    color: #00ff00;
+}
+
+.player-bet-display {
+    color: #0000ff;
+}
+
+::backdrop {
+    background-color: black;
+    opacity: 0.4;
+}
+
+#roll-display {
+    position: absolute;
+    left: 1505px;
+    top: 355px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 200%;
+    text-decoration: none;
+    text-shadow:
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000;
 }
 
 #on-button {
@@ -39,4 +96,54 @@
     width: 85px;
     left: 1475px;
     top: 55px;
+}
+
+.dice-png {
+    position: absolute;
+    left: 1475px;
+    max-width: 5%;
+}
+
+#first-die {
+    top: 155px;
+}
+
+#second-die {
+    top: 255px;
+}
+
+.chip-container {
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    left: 105px;
+    top: 50px;
+}
+
+.chip-container img {
+    width: 100%;
+    height: auto;
+}
+
+#chip-text {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color: black;
+    text-align: center;
+    width: 100%;
+}
+
+.footer {
+    background-image: linear-gradient(#548347, #444444);
+    padding-bottom: 250px;
+    margin-bottom: -250px;
+}
+
+.rules {
+    padding-top: 50px;
+    padding-left: 5%;
+    padding-bottom: 200px;
 }
