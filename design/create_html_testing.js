@@ -18,7 +18,7 @@ function iterateObj(id, loc) {
 }
 
 function removeObj(id) {
-        document.getElementById(`obj${id}`).remove();
+        document.getElementById(`chip-${id}`).remove();
 }
 
 function popObj(obj) {
