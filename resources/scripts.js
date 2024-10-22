@@ -323,6 +323,9 @@ function pushSecondaryBets() {
     return;
 }
 
+function secondaryBetHandler() {
+    // This function should handle the secondaryBetObj{} as well as what the chipSet() function handles now
+}
 
 function gameOver() {
     displayMessage(BANKRUPT);
