@@ -310,13 +310,6 @@ function makePlace(num) {
     return;
 }
 
-class SecondaryBet {
-    constructor(point, amount) {
-        this.point = point;
-        this.amount = amount;
-    }
-}
-
 function pushSecondaryBets() {
     if (testObjPop(secondaryBetObj) === false) {
         for (let i = 1; i < 11; i++) {
