@@ -153,45 +153,45 @@ function buttonPosition(loc) {
         case 1:
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
-            onButton.style.left = '1475px';
+            onButton.style.left = `${SIDESPOT}px`;
             secondaryBetsActive.innerHTML = '';
             pointOpen = false;
             break;
         case 4:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '85px';
+            onButton.style.left = `${FOURSPOT}px`;
             break;
         case 5:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '315px';
+            onButton.style.left = `${FIVESPOT}px`;
             break;
         case 6:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '545px';
+            onButton.style.left = `${SIXSPOT}px`;
             break;
         case 8:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '775px';
+            onButton.style.left = `${EIGHTSPOT}px`;
             break;
         case 9:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1005px';
+            onButton.style.left = `${NINESPOT}px`;
             break;
         case 10:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1235px';
+            onButton.style.left = `${TENSPOT}px`;
             break;
     }
     return;
 }
 
-function chipChange(loc, color) {
+function chipSet(loc, color) {
     // Refactor according to create_html_testing
     // This will create and delete HTML objects as needed rather than change existing ones
     switch (loc) {
@@ -489,6 +489,14 @@ const PRIMARYLOSE = `7 was rolled, ${playerPoint} missed and you lose`;
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
+
+const SIDESPOT = 1475;
+const FOURSPOT = 85;
+const FIVESPOT = 315;
+const SIXSPOT = 545;
+const EIGHTSPOT = 775;
+const NINESPOT = 1005;
+const TENSPOT = 1235;
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
