@@ -121,7 +121,6 @@ function secondaryRoll(roll) {
             if (secondaryBetObj[i] > 0) {
                 buildSummary(SECONDARYLOSE, i);
                 payOut(false, false, 0);
-                //delete secondaryBetObj[i];
                 secondaryBetDelete(i);
             }
         }
@@ -129,7 +128,6 @@ function secondaryRoll(roll) {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
             buildSummary(PLACEWIN, roll);
             payOut(false, true, secondaryBetObj[roll]);
-            //delete secondaryBetObj[roll];
             secondaryBetDelete(roll);
         }
     }
@@ -137,17 +135,14 @@ function secondaryRoll(roll) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN);
             payOut(false, true, (secondaryBetObj[1]));
-            //delete secondaryBetObj[1];
             secondaryBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE);
             payOut(false, false, 0);
-            //delete secondaryBetObj[1];
             secondaryBetDelete(1);
         } else {
             buildSummary(COMESET, roll);
-            secondaryBetObj[roll] = secondaryBetObj[1];
-            //delete secondaryBetObj[1];
+            secondaryBetAdd(roll, secondaryBetObj[1]);
             secondaryBetDelete(1);
         }
     }
@@ -191,58 +186,6 @@ function buttonPosition(loc) {
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
             onButton.style.left = `${TENSPOT}px`;
-            break;
-    }
-    return;
-}
-
-function chipSet(loc, color) {
-    // Refactor according to create_html_testing
-    // This will create and delete HTML objects as needed rather than change existing ones
-    switch (loc) {
-        case 1:
-            chipContainerElement.style.visibility = 'hidden';
-            break;
-        case 4:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '85px';
-            break;
-        case 5:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '315px';
-            break;
-        case 6:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '545px';
-            break;
-        case 8:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '775px';
-            break;
-        case 9:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '1005px';
-            break;
-        case 10:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '1235px';
-            break;
-    }
-    switch (true) {
-        case (color > 0):
-            // White
-            break;
-        case (color >= 5):
-            // Red
-            break;
-        case (color >= 25):
-            // Green
-            break;
-        case (color >= 100):
-            // Black
-            break;
-        case (color >= 500):
-            // Orange
             break;
     }
     return;
@@ -300,7 +243,6 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    //secondaryBetObj[1] = comeAmount;
     secondaryBetAdd(1, comeAmount);
     moneyChange(comeAmount);
     betDialogElement.disabled = true;
@@ -321,7 +263,6 @@ function pushSecondaryBets() {
             if (secondaryBetObj[i] > 0) {
                 playerMoney += secondaryBetObj[i];
                 totalBets -= secondaryBetObj[i];
-                //delete secondaryBetObj[i];
                 secondaryBetDelete(i);
             }
         }
@@ -339,14 +280,54 @@ function secondaryBetAdd(point, amount) {
     divChip.appendChild(imgChip);
     divChip.setAttribute('id', `chip-${point}`);
     divChip.setAttribute('class', 'chip-container');
-    divChip.style.left = 85; // Use selector to determine position
     txtChip.innerHTML = `$${amount}`;
     txtChip.setAttribute('class', 'chip-text');
-    imgChip.setAttribute('src', `images/chip_red.svg`); // Use selector to determine color
+    switch (point) {
+        case 1:
+            divChip.style.left = `${SIDESPOT}px`;
+            break;
+        case 4:
+            divChip.style.left = `${FOURSPOT}px`;
+            break;
+        case 5:
+            divChip.style.left = `${FIVESPOT}px`;
+            break;
+        case 6:
+            divChip.style.left = `${SIXSPOT}px`;
+            break;
+        case 8:
+            divChip.style.left = `${EIGHTSPOT}px`;
+            break;
+        case 9:
+            divChip.style.left = `${NINESPOT}px`;
+            break;
+        case 10:
+            divChip.style.left = `${TENSPOT}px`;
+            break;
+    }
+    switch (true) {
+        case (amount >= 500):
+            imgChip.setAttribute('src', `images/chip_orange.svg`);
+            break;
+        case (amount >= 100):
+            imgChip.setAttribute('src', `images/chip_black.svg`);
+            break;
+        case (amount >= 25):
+            imgChip.setAttribute('src', `images/chip_green.svg`);
+            break;
+        case (amount >= 5):
+            imgChip.setAttribute('src', `images/chip_red.svg`);
+            break;
+        case (amount > 0):
+            imgChip.setAttribute('src', `images/chip_white.svg`);
+            break;
+    }
+    return;
 }
 
 function secondaryBetDelete(point) {
     delete secondaryBetObj[point];
+    document.getElementById(`chip-${point}`).remove();
 }
 
 function gameOver() {
@@ -562,7 +543,6 @@ placeDialogAccept.addEventListener('click', () => {
     } else {
         lastPlayerMoney = playerMoney;
         playerMoney -= placeAmount;
-        // secondaryBetObj[makePlaceNumClicked] = placeAmount;
         secondaryBetAdd(makePlaceNumClicked, placeAmount);
         moneyChange(placeAmount);
         placeDialog.close();
