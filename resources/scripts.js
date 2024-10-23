@@ -330,12 +330,22 @@ function pushSecondaryBets() {
 }
 
 function secondaryBetAdd(point, amount) {
-    // This function should handle the secondaryBetObj{} as well as what the chipSet() function handles now
     secondaryBetObj[point] = amount;
+    const divChip = document.createElement('div');
+    const txtChip = document.createElement('div');
+    const imgChip = document.createElement('img');
+    gameBoardElement.appendChild(divChip);
+    divChip.appendChild(txtChip);
+    divChip.appendChild(imgChip);
+    divChip.setAttribute('id', `chip-${point}`);
+    divChip.setAttribute('class', 'chip-container');
+    divChip.style.left = 85; // Use selector to determine position
+    txtChip.innerHTML = `$${amount}`;
+    txtChip.setAttribute('class', 'chip-text');
+    imgChip.setAttribute('src', `images/chip_red.svg`); // Use selector to determine color
 }
 
 function secondaryBetDelete(point) {
-    // This function should handle the secondaryBetObj{} as well as what the chipSet() function handles now
     delete secondaryBetObj[point];
 }
 
@@ -500,6 +510,7 @@ const EIGHTSPOT = 775;
 const NINESPOT = 1005;
 const TENSPOT = 1235;
 
+const gameBoardElement = document.getElementById('gameboard');
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
 const betButtonElement = document.getElementById('bet-button');

@@ -28,18 +28,18 @@ body {
     color: blue;
 }
 
-.gameboard,
+#gameboard,
 .about,
 .rules {
     background-color: #548347;
 }
 
-.gameboard {
+#gameboard {
     position: relative;
     z-index: 1;
 }
 
-.gameboard p {
+#gameboard p {
     margin-bottom: 0;
 }
 
@@ -125,7 +125,7 @@ body {
     height: auto;
 }
 
-#chip-text {
+.chip-text {
     margin: 0;
     position: absolute;
     top: 50%;
