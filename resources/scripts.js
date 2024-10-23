@@ -153,46 +153,47 @@ function buttonPosition(loc) {
         case 1:
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
-            onButton.style.left = '1475px';
+            onButton.style.left = `${SIDESPOT}px`;
             secondaryBetsActive.innerHTML = '';
             pointOpen = false;
             break;
         case 4:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '85px';
+            onButton.style.left = `${FOURSPOT}px`;
             break;
         case 5:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '315px';
+            onButton.style.left = `${FIVESPOT}px`;
             break;
         case 6:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '545px';
+            onButton.style.left = `${SIXSPOT}px`;
             break;
         case 8:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '775px';
+            onButton.style.left = `${EIGHTSPOT}px`;
             break;
         case 9:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1005px';
+            onButton.style.left = `${NINESPOT}px`;
             break;
         case 10:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1235px';
+            onButton.style.left = `${TENSPOT}px`;
             break;
     }
     return;
 }
 
-function chipChange(loc, color) {
-    // To implement in next PR
+function chipSet(loc, color) {
+    // Refactor according to create_html_testing
+    // This will create and delete HTML objects as needed rather than change existing ones
     switch (loc) {
         case 1:
             chipContainerElement.style.visibility = 'hidden';
@@ -308,13 +309,6 @@ function makePlace(num) {
     return;
 }
 
-class SecondaryBet {
-    constructor(point, amount) {
-        this.point = point;
-        this.amount = amount;
-    }
-}
-
 function pushSecondaryBets() {
     if (testObjPop(secondaryBetObj) === false) {
         for (let i = 1; i < 11; i++) {
@@ -328,6 +322,9 @@ function pushSecondaryBets() {
     return;
 }
 
+function secondaryBetHandler() {
+    // This function should handle the secondaryBetObj{} as well as what the chipSet() function handles now
+}
 
 function gameOver() {
     displayMessage(BANKRUPT);
@@ -480,6 +477,14 @@ const PLACEWIN = 'Place bet wins on';
 const COMEWIN = 'The last come bet has won!';
 const COMELOSE = 'The last come bet has lost';
 const COMESET = 'The last come bet is placed on';
+
+const SIDESPOT = 1475;
+const FOURSPOT = 85;
+const FIVESPOT = 315;
+const SIXSPOT = 545;
+const EIGHTSPOT = 775;
+const NINESPOT = 1005;
+const TENSPOT = 1235;
 
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
