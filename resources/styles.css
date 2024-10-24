@@ -123,6 +123,7 @@ body {
 .chip-container img {
     width: 100%;
     height: auto;
+    transition: 1s;
 }
 
 .chip-text {

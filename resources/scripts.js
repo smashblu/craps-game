@@ -375,6 +375,13 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
+    // Issues
+    // Win place bet: Says 'no action'
+    // 7 with secondary bets active: No message displays
+    // Craps pre point: Says 'place bets lose'
+    // 7/11 pre point: Says 'point wins'
+    // Come bet 7/11: Says 'no action'
+    // Push secondary bets: Iterates a (blank) message for bets even though amount < 1
     switch (msg) {
         case SHOWPOINT:
             msg += ` ${playerPoint}`;
