@@ -66,7 +66,7 @@ function buttonStates() {
 async function firstRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    buildSummary(DICEROLLED);
+    buildSummary(DICEROLLED, null);
     if (playerRoll === 7 || playerRoll === 11) {
         payOut(true, true, betAmount);
         return;
@@ -78,7 +78,7 @@ async function firstRoll() {
     playerPoint = playerRoll;
     pointOpen = true;
     buttonPosition(playerRoll);
-    buildSummary(SHOWPOINT);
+    buildSummary(SHOWPOINT, null);
     displayMessage(rollSummary);
     rollSummary = null;
     buttonStates();
@@ -88,7 +88,7 @@ async function firstRoll() {
 async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    buildSummary(DICEROLLED);
+    buildSummary(DICEROLLED, null);
     if (testObjPop(secondaryBetObj) === false) {
         secondaryRoll(playerRoll);
     }
@@ -100,7 +100,7 @@ async function gameRoll() {
         payOut(true, false, 0);
         return;
     }
-    buildSummary(NOACTION);
+    buildSummary(NOACTION, null);
     displayMessage(rollSummary);
     rollSummary = null;
     buttonStates();
@@ -119,29 +119,30 @@ function secondaryRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
             if (secondaryBetObj[i] > 0) {
-                buildSummary(SECONDARYLOSE, i);
+                buildSummary(ALLBETS, i);
                 payOut(false, false, 0);
                 secondaryBetDelete(i);
             }
+            buildSummary(SECONDARYLOSE, null);
         }
     } else {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
-            buildSummary(PLACEWIN, roll);
+            buildSummary(PLACEWIN, null);
             payOut(false, true, secondaryBetObj[roll]);
             secondaryBetDelete(roll);
         }
     }
     if (secondaryBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
-            buildSummary(COMEWIN);
+            buildSummary(COMEWIN, null);
             payOut(false, true, (secondaryBetObj[1]));
             secondaryBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
-            buildSummary(COMELOSE);
+            buildSummary(COMELOSE, null);
             payOut(false, false, 0);
             secondaryBetDelete(1);
         } else {
-            buildSummary(COMESET, roll);
+            buildSummary(COMESET, null);
             secondaryBetAdd(roll, secondaryBetObj[1]);
             secondaryBetDelete(1);
         }
@@ -196,21 +197,27 @@ function payOut(isprimary, win, amount) {
         if (win === true) {
             playerMoney += (amount * 2);
             totalBets -= amount;
+            displayMessage(rollSummary);
+            rollSummary = null;
             return;
         }
         totalBets -= amount;
+        displayMessage(rollSummary);
+        rollSummary = null;
         return;
     }
     if (win === true) {
-        buildSummary(PRIMARYWIN);
+        buildSummary(PRIMARYWIN, null);
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
         pushSecondaryBets();
+        displayMessage(rollSummary);
+        rollSummary = null;
         resetGame();
         moneyChange(0);
         return;
     }
-    buildSummary(PRIMARYLOSE);
+    buildSummary(PRIMARYLOSE, null);
     if (playerMoney === 0) {
         gameOver();
         return;
@@ -264,7 +271,9 @@ function pushSecondaryBets() {
                 playerMoney += secondaryBetObj[i];
                 totalBets -= secondaryBetObj[i];
                 secondaryBetDelete(i);
+                buildSummary(ALLBETS, i);
             }
+            buildSummary(SECONDARYPUSH, null);
         }
     }
     return;
@@ -366,14 +375,32 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
+    switch (msg) {
+        case SHOWPOINT:
+            msg += ` ${playerPoint}`;
+            break;
+        case DICEROLLED:
+            msg += ` ${playerRoll}`;
+            break;
+        case NOPOINTWIN:
+            msg += ` ${playerRoll}`;
+            break;
+        case NOPOINTLOSE:
+            msg += ` ${playerRoll}`;
+            break;
+        case PLACEWIN:
+            msg += ` ${playerRoll}`;
+            break;
+        case COMESET:
+            msg += ` ${playerRoll}`;
+            break;
+    }
     if (rollSummary === null) {
         rollSummary = msg;
+    } else if (msg === ALLBETS) {
+        rollSummary += `, ${rolled}`;
     } else {
         rollSummary += `, ${msg}`;
-    }
-    if (msg === SECONDARYLOSE) {
-        // catalog all lost bets
-        rollSummary += rolled;
     }
     return;
 }
@@ -472,9 +499,11 @@ const PRIMARYLOSE = '7 was rolled, point and place bets lose';
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
-const SECONDARYLOSE = 'The place bets have lost';
 const COMEWIN = 'The last come bet has won!';
 const COMELOSE = 'The last come bet has lost';
+const SECONDARYLOSE = 'have all lost';
+const SECONDARYPUSH = 'have all pushed';
+const ALLBETS = 'Placeholder message for all secondary bets';
 // playerRoll should trail following constants
 const SHOWPOINT = 'Your point is';
 const DICEROLLED = 'You rolled';
