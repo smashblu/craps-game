@@ -17,7 +17,7 @@ function newGame() {
 
 function resetGame() {
     playerRoll = 1;
-    pointOpen = false;
+    playerPoint = 0;
     buttonPosition(playerRoll);
     betAmount = 0;
     totalBets = 0;
@@ -55,7 +55,7 @@ function buttonStates() {
     betButtonElement.disabled = true;
     comeButtonElement.disabled = true;
     secondaryBetsActive.innerHTML = '';
-    if (pointOpen === true) {
+    if (playerPoint > 1) {
         comeButtonElement.disabled = false;
         betDialogElement.disabled = false;
         secondaryBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
@@ -76,7 +76,6 @@ async function firstRoll() {
         return;
     }
     playerPoint = playerRoll;
-    pointOpen = true;
     buttonPosition(playerRoll);
     buildSummary(SHOWPOINT, null);
     displayMessage(rollSummary);
@@ -107,7 +106,7 @@ async function gameRoll() {
     return;
 }
 function checkGameState() {
-    if (pointOpen === false) {
+    if (playerPoint < 1) {
         firstRoll();
         return;
     }
@@ -156,7 +155,6 @@ function buttonPosition(loc) {
             onButton.style.visibility = 'hidden';
             onButton.style.left = `${SIDESPOT}px`;
             secondaryBetsActive.innerHTML = '';
-            pointOpen = false;
             break;
         case 4:
             offButton.style.visibility = 'hidden';
@@ -434,7 +432,7 @@ function boardClick(e) {
         displayMessage(PLACEAGAIN);
         return;
     }
-    if (pointOpen === false) {
+    if (playerPoint < 1) {
         displayMessage(PLACENOPOINT);
         return;
     }
@@ -487,7 +485,6 @@ function getRandomInt(min, max) {
 let playerMoney = 100;
 let lastPlayerMoney = 0;
 let playerRoll = 1;
-let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 let totalBets = 0;
