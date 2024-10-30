@@ -18,7 +18,7 @@ function newGame() {
 function resetGame() {
     playerRoll = 1;
     playerPoint = 0;
-    buttonPosition(playerRoll);
+    buttonPosition();
     betAmount = 0;
     totalBets = 0;
     buttonStates();
@@ -76,7 +76,7 @@ async function firstRoll() {
         return;
     }
     playerPoint = playerRoll;
-    buttonPosition(playerRoll);
+    buttonPosition();
     buildSummary(SHOWPOINT, null);
     displayMessage(rollSummary);
     rollSummary = null;
@@ -148,8 +148,8 @@ function secondaryRoll(roll) {
     }
 }
 
-function buttonPosition(loc) {
-    switch (loc) {
+function buttonPosition() {
+    switch (playerRoll) {
         case 1:
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
@@ -222,7 +222,7 @@ function payOut(isprimary, win, amount) {
     }
     displayMessage(rollSummary);
     rollSummary = null;
-    buttonPosition(playerRoll);
+    buttonPosition();
     resetGame();
     moneyChange(0);
     return;
@@ -340,7 +340,7 @@ function secondaryBetDelete(point) {
 function gameOver() {
     displayMessage(BANKRUPT);
     playerRoll = 1;
-    buttonPosition(playerRoll);
+    buttonPosition();
     buttonStates();
     return;
 }
@@ -398,6 +398,8 @@ function buildSummary(msg, rolled) {
             break;
         case COMESET:
             msg += ` ${playerRoll}`;
+            break;
+        default:
             break;
     }
     if (rollSummary === null) {
@@ -509,7 +511,7 @@ const SECONDARYLOSE = 'have all lost';
 const SECONDARYPUSH = 'have all pushed';
 const ALLBETS = 'Placeholder message for all secondary bets';
 // playerRoll should trail following constants
-const SHOWPOINT = 'Your point is';
+const SHOWPOINT = 'Your point is'; // playerPoint for this one only
 const DICEROLLED = 'You rolled';
 const NOPOINTWIN = 'Win on pass line with';
 const NOPOINTLOSE = 'Craps, you lose with';
@@ -553,7 +555,7 @@ const placeDialogAccept = document.getElementById('place-accept');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-buttonPosition(playerRoll);
+buttonPosition();
 rollButtonElement.disabled = true;
 betButtonElement.disabled = true;
 comeButtonElement.disabled = true;
