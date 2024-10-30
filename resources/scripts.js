@@ -413,16 +413,9 @@ function buildSummary(msg, rolled) {
 }
 
 function displayMessage(str) {
-    if (rollSummary === null) {
-        document.getElementById('current-message').innerHTML = str;
-    } else if (str === NOACTION) {
-        document.getElementById('current-message').innerHTML = 'no action';
-    } else {
-        document.getElementById('current-message').innerHTML = rollSummary;
-    }
+    document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
-    rollSummary = null;
     return;
 }
 
