@@ -205,7 +205,11 @@ function payOut(isprimary, win, amount) {
         return;
     }
     if (win === true) {
-        buildSummary(PRIMARYWIN, null);
+        if (playerPoint > 1) {
+            buildSummary(PRIMARYWIN, null);
+        } else {
+            buildSummary(FIRSTWIN, null);
+        }
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
         pushSecondaryBets();
@@ -215,7 +219,11 @@ function payOut(isprimary, win, amount) {
         moneyChange(0);
         return;
     }
-    buildSummary(PRIMARYLOSE, null);
+    if (playerPoint > 1) {
+        buildSummary(PRIMARYLOSE, null);
+    } else {
+        buildSummary(FIRSTLOSE, null);
+    }
     if (playerMoney === 0) {
         gameOver();
         return;
@@ -373,11 +381,6 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
-    // Issues
-    // Logging push/loss secondary bets creates message for each even if no bet was on the number (pushSecondaryBets)
-    // However logging is correct but adds extra "have pushed _" messages
-    // 7/11 says "point won"
-    // Does not tell player come bets win/lose
     switch (msg) {
         case SHOWPOINT:
             msg += ` ${playerPoint}`;
@@ -493,6 +496,8 @@ const NOACTION = 'No action, roll again';
 const SECONDARYNOACTION = 'No action on point';
 const PRIMARYWIN = 'The point was rolled, you win!';
 const PRIMARYLOSE = '7 was rolled, point and place bets lose';
+const FIRSTWIN = 'Initial bet wins!';
+const FIRSTLOSE = 'Initial bet loses';
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
