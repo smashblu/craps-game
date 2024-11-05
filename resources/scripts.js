@@ -126,7 +126,7 @@ function secondaryRoll(roll) {
         }
     } else {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
-            buildSummary(PLACEWIN, null);
+            buildSummary(PLACEWIN, null); // This is not being added to summary
             payOut(false, true, secondaryBetObj[roll]);
             secondaryBetDelete(roll);
         }
