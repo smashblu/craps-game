@@ -121,8 +121,8 @@ function secondaryRoll(roll) {
                 buildSummary(ALLBETS, i);
                 secondaryBetDelete(i);
             }
-            buildSummary(SECONDARYLOSE, null);
         }
+        buildSummary(SECONDARYLOSE, null);
         payOut(false, false, 0);
     } else {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
