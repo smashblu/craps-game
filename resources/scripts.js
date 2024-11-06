@@ -197,13 +197,9 @@ function payOut(isprimary, win, amount) {
         if (win === true) {
             playerMoney += (amount * 2);
             totalBets -= amount;
-            displayMessage(rollSummary);
-            rollSummary = null;
             return;
         }
         totalBets -= amount;
-        displayMessage(rollSummary);
-        rollSummary = null;
         return;
     }
     if (win === true) {
@@ -497,7 +493,7 @@ const LOADGAME = 'Loading not yet implemented';
 const NOACTION = 'No action, roll again';
 const SECONDARYNOACTION = 'No action on point';
 const PRIMARYWIN = 'The point was rolled, you win!';
-const PRIMARYLOSE = '7 was rolled, point and place bets lose';
+const PRIMARYLOSE = 'was rolled, point and place bets lose';
 const FIRSTWIN = 'Initial bet wins!';
 const FIRSTLOSE = 'Initial bet loses';
 const INVALIDBET = 'Please make a valid place bet';
