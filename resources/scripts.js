@@ -126,7 +126,6 @@ function secondaryRoll(roll) {
         payOut(false, false, 0);
     } else {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
-            console.log(`place win: ${playerRoll}`);
             buildSummary(PLACEWIN, null); // This is not being added to summary
             payOut(false, true, secondaryBetObj[roll]);
             secondaryBetDelete(roll);
@@ -138,7 +137,6 @@ function secondaryRoll(roll) {
             payOut(false, true, (secondaryBetObj[1]));
             secondaryBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
-            console.log('come lose');
             buildSummary(COMELOSE, null);
             payOut(false, false, 0);
             secondaryBetDelete(1);
