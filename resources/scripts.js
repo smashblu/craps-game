@@ -17,8 +17,8 @@ function newGame() {
 
 function resetGame() {
     playerRoll = 1;
-    pointOpen = false;
-    buttonPosition(playerRoll);
+    playerPoint = 0;
+    buttonPosition();
     betAmount = 0;
     totalBets = 0;
     buttonStates();
@@ -55,7 +55,7 @@ function buttonStates() {
     betButtonElement.disabled = true;
     comeButtonElement.disabled = true;
     secondaryBetsActive.innerHTML = '';
-    if (pointOpen === true) {
+    if (playerPoint > 1) {
         comeButtonElement.disabled = false;
         betDialogElement.disabled = false;
         secondaryBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
@@ -66,7 +66,7 @@ function buttonStates() {
 async function firstRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    buildSummary(DICEROLLED);
+    buildSummary(DICEROLLED, null);
     if (playerRoll === 7 || playerRoll === 11) {
         payOut(true, true, betAmount);
         return;
@@ -76,9 +76,8 @@ async function firstRoll() {
         return;
     }
     playerPoint = playerRoll;
-    pointOpen = true;
-    buttonPosition(playerRoll);
-    buildSummary(SHOWPOINT);
+    buttonPosition();
+    buildSummary(SHOWPOINT, null);
     displayMessage(rollSummary);
     rollSummary = null;
     buttonStates();
@@ -88,7 +87,7 @@ async function firstRoll() {
 async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    buildSummary(DICEROLLED);
+    buildSummary(DICEROLLED, null);
     if (testObjPop(secondaryBetObj) === false) {
         secondaryRoll(playerRoll);
     }
@@ -100,14 +99,14 @@ async function gameRoll() {
         payOut(true, false, 0);
         return;
     }
-    buildSummary(NOACTION);
+    buildSummary(NOACTION, null);
     displayMessage(rollSummary);
     rollSummary = null;
     buttonStates();
     return;
 }
 function checkGameState() {
-    if (pointOpen === false) {
+    if (playerPoint < 1) {
         firstRoll();
         return;
     }
@@ -119,124 +118,73 @@ function secondaryRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
             if (secondaryBetObj[i] > 0) {
-                buildSummary(SECONDARYLOSE, i);
-                payOut(false, false, 0);
-                delete secondaryBetObj[i];
+                buildSummary(ALLBETS, i);
+                secondaryBetDelete(i);
             }
         }
+        buildSummary(SECONDARYLOSE, null);
+        payOut(false, false, 0);
     } else {
         if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
-            buildSummary(PLACEWIN, roll);
+            buildSummary(PLACEWIN, null); // This is not being added to summary
             payOut(false, true, secondaryBetObj[roll]);
-            delete secondaryBetObj[roll];
+            secondaryBetDelete(roll);
         }
     }
     if (secondaryBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
-            buildSummary(COMEWIN);
+            buildSummary(COMEWIN, null);
             payOut(false, true, (secondaryBetObj[1]));
-            delete secondaryBetObj[1];
+            secondaryBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
-            buildSummary(COMELOSE);
+            buildSummary(COMELOSE, null);
             payOut(false, false, 0);
-            delete secondaryBetObj[1];
+            secondaryBetDelete(1);
         } else {
-            buildSummary(COMESET, roll);
-            secondaryBetObj[roll] = secondaryBetObj[1];
-            delete secondaryBetObj[1];
+            buildSummary(COMESET, null);
+            secondaryBetAdd(roll, secondaryBetObj[1]);
+            secondaryBetDelete(1);
         }
     }
 }
 
-function buttonPosition(loc) {
-    switch (loc) {
+function buttonPosition() {
+    switch (playerRoll) {
         case 1:
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
-            onButton.style.left = '1475px';
+            onButton.style.left = `${SIDESPOT}px`;
             secondaryBetsActive.innerHTML = '';
-            pointOpen = false;
             break;
         case 4:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '85px';
+            onButton.style.left = `${FOURSPOT}px`;
             break;
         case 5:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '315px';
+            onButton.style.left = `${FIVESPOT}px`;
             break;
         case 6:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '545px';
+            onButton.style.left = `${SIXSPOT}px`;
             break;
         case 8:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '775px';
+            onButton.style.left = `${EIGHTSPOT}px`;
             break;
         case 9:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1005px';
+            onButton.style.left = `${NINESPOT}px`;
             break;
         case 10:
             offButton.style.visibility = 'hidden';
             onButton.style.visibility = 'visible';
-            onButton.style.left = '1235px';
-            break;
-    }
-    return;
-}
-
-function chipChange(loc, color) {
-    // To implement in next PR
-    switch (loc) {
-        case 1:
-            chipContainerElement.style.visibility = 'hidden';
-            break;
-        case 4:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '85px';
-            break;
-        case 5:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '315px';
-            break;
-        case 6:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '545px';
-            break;
-        case 8:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '775px';
-            break;
-        case 9:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '1005px';
-            break;
-        case 10:
-            chipContainerElement.style.visibility = 'visible';
-            chipContainerElement.style.left = '1235px';
-            break;
-    }
-    switch (true) {
-        case (color > 0):
-            // White
-            break;
-        case (color >= 5):
-            // Red
-            break;
-        case (color >= 25):
-            // Green
-            break;
-        case (color >= 100):
-            // Black
-            break;
-        case (color >= 500):
-            // Orange
+            onButton.style.left = `${TENSPOT}px`;
             break;
     }
     return;
@@ -253,22 +201,32 @@ function payOut(isprimary, win, amount) {
         return;
     }
     if (win === true) {
-        buildSummary(PRIMARYWIN);
+        if (playerPoint > 1) {
+            buildSummary(PRIMARYWIN, null);
+        } else {
+            buildSummary(FIRSTWIN, null);
+        }
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
         pushSecondaryBets();
+        displayMessage(rollSummary);
+        rollSummary = null;
         resetGame();
         moneyChange(0);
         return;
     }
-    buildSummary(PRIMARYLOSE);
+    if (playerPoint > 1) {
+        buildSummary(PRIMARYLOSE, null);
+    } else {
+        buildSummary(FIRSTLOSE, null);
+    }
     if (playerMoney === 0) {
         gameOver();
         return;
     }
     displayMessage(rollSummary);
     rollSummary = null;
-    buttonPosition(playerRoll);
+    buttonPosition();
     resetGame();
     moneyChange(0);
     return;
@@ -294,7 +252,7 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    secondaryBetObj[1] = comeAmount;
+    secondaryBetAdd(1, comeAmount);
     moneyChange(comeAmount);
     betDialogElement.disabled = true;
     comeButtonElement.disabled = true;
@@ -308,31 +266,85 @@ function makePlace(num) {
     return;
 }
 
-class SecondaryBet {
-    constructor(point, amount) {
-        this.point = point;
-        this.amount = amount;
-    }
-}
-
 function pushSecondaryBets() {
     if (testObjPop(secondaryBetObj) === false) {
         for (let i = 1; i < 11; i++) {
             if (secondaryBetObj[i] > 0) {
                 playerMoney += secondaryBetObj[i];
                 totalBets -= secondaryBetObj[i];
-                delete secondaryBetObj[i];
+                secondaryBetDelete(i);
+                buildSummary(ALLBETS, i);
             }
         }
+        buildSummary(SECONDARYPUSH, null);
     }
     return;
 }
 
+function secondaryBetAdd(point, amount) {
+    secondaryBetObj[point] = amount;
+    const divChip = document.createElement('div');
+    const txtChip = document.createElement('div');
+    const imgChip = document.createElement('img');
+    gameBoardElement.appendChild(divChip);
+    divChip.appendChild(txtChip);
+    divChip.appendChild(imgChip);
+    divChip.setAttribute('id', `chip-${point}`);
+    divChip.setAttribute('class', 'chip-container');
+    txtChip.innerHTML = `$${amount}`;
+    txtChip.setAttribute('class', 'chip-text');
+    switch (point) {
+        case 1:
+            divChip.style.left = `${SIDESPOT}px`;
+            break;
+        case 4:
+            divChip.style.left = `${FOURSPOT}px`;
+            break;
+        case 5:
+            divChip.style.left = `${FIVESPOT}px`;
+            break;
+        case 6:
+            divChip.style.left = `${SIXSPOT}px`;
+            break;
+        case 8:
+            divChip.style.left = `${EIGHTSPOT}px`;
+            break;
+        case 9:
+            divChip.style.left = `${NINESPOT}px`;
+            break;
+        case 10:
+            divChip.style.left = `${TENSPOT}px`;
+            break;
+    }
+    switch (true) {
+        case (amount >= 500):
+            imgChip.setAttribute('src', `images/chip_orange.svg`);
+            break;
+        case (amount >= 100):
+            imgChip.setAttribute('src', `images/chip_black.svg`);
+            break;
+        case (amount >= 25):
+            imgChip.setAttribute('src', `images/chip_green.svg`);
+            break;
+        case (amount >= 5):
+            imgChip.setAttribute('src', `images/chip_red.svg`);
+            break;
+        case (amount > 0):
+            imgChip.setAttribute('src', `images/chip_white.svg`);
+            break;
+    }
+    return;
+}
+
+function secondaryBetDelete(point) {
+    delete secondaryBetObj[point];
+    document.getElementById(`chip-${point}`).remove();
+}
 
 function gameOver() {
     displayMessage(BANKRUPT);
     playerRoll = 1;
-    buttonPosition(playerRoll);
+    buttonPosition();
     buttonStates();
     return;
 }
@@ -365,29 +377,42 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
+    switch (msg) {
+        case SHOWPOINT:
+            msg += ` ${playerPoint}`;
+            break;
+        case DICEROLLED:
+            msg += ` ${playerRoll}`;
+            break;
+        case NOPOINTWIN:
+            msg += ` ${playerRoll}`;
+            break;
+        case NOPOINTLOSE:
+            msg += ` ${playerRoll}`;
+            break;
+        case PLACEWIN:
+            msg += ` ${playerRoll}`;
+            break;
+        case COMESET:
+            msg += ` ${playerRoll}`;
+            break;
+        default:
+            break;
+    }
     if (rollSummary === null) {
         rollSummary = msg;
+    } else if (msg === ALLBETS) {
+        rollSummary += `, ${rolled}`;
     } else {
         rollSummary += `, ${msg}`;
-    }
-    if (msg === SECONDARYLOSE) {
-        // catalog all lost bets
-        rollSummary += rolled;
     }
     return;
 }
 
 function displayMessage(str) {
-    if (rollSummary === null) {
-        document.getElementById('current-message').innerHTML = str;
-    } else if (str === NOACTION) {
-        document.getElementById('current-message').innerHTML = 'no action';
-    } else {
-        document.getElementById('current-message').innerHTML = rollSummary;
-    }
+    document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
-    rollSummary = null;
     return;
 }
 
@@ -399,7 +424,7 @@ function boardClick(e) {
         displayMessage(PLACEAGAIN);
         return;
     }
-    if (pointOpen === false) {
+    if (playerPoint < 1) {
         displayMessage(PLACENOPOINT);
         return;
     }
@@ -452,7 +477,6 @@ function getRandomInt(min, max) {
 let playerMoney = 100;
 let lastPlayerMoney = 0;
 let playerRoll = 1;
-let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 let totalBets = 0;
@@ -464,23 +488,37 @@ let secondaryBetObj = {};
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
 const LOADGAME = 'Loading not yet implemented';
-const DICEROLLED = 'You rolled';
-const SHOWPOINT = 'Your point is';
 const NOACTION = 'No action, roll again';
 const SECONDARYNOACTION = 'No action on point';
-const NOPOINTWIN = 'Win on pass line with';
-const NOPOINTLOSE = 'Craps, you lose with';
 const PRIMARYWIN = 'The point was rolled, you win!';
-const PRIMARYLOSE = '7 was rolled, point and place bets lose';
+const PRIMARYLOSE = 'point and place bets lose';
+const FIRSTWIN = 'Initial bet wins!';
+const FIRSTLOSE = 'Initial bet loses';
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
-const SECONDARYLOSE = 'The place bets have lost';
-const PLACEWIN = 'Place bet wins on';
 const COMEWIN = 'The last come bet has won!';
 const COMELOSE = 'The last come bet has lost';
+const SECONDARYLOSE = 'have all lost';
+const SECONDARYPUSH = 'have all pushed';
+const ALLBETS = 'Placeholder message for all secondary bets';
+// playerRoll should trail following constants
+const SHOWPOINT = 'Your point is'; // playerPoint for this one only
+const DICEROLLED = 'You rolled';
+const NOPOINTWIN = 'Win on pass line with';
+const NOPOINTLOSE = 'Craps, you lose with';
+const PLACEWIN = 'Place bet wins on';
 const COMESET = 'The last come bet is placed on';
 
+const SIDESPOT = 1475;
+const FOURSPOT = 85;
+const FIVESPOT = 315;
+const SIXSPOT = 545;
+const EIGHTSPOT = 775;
+const NINESPOT = 1005;
+const TENSPOT = 1235;
+
+const gameBoardElement = document.getElementById('gameboard');
 const playerMoneyElement = document.getElementById('player-money');
 const playerBetElement = document.getElementById('player-bet');
 const betButtonElement = document.getElementById('bet-button');
@@ -509,7 +547,7 @@ const placeDialogAccept = document.getElementById('place-accept');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-buttonPosition(playerRoll);
+buttonPosition();
 rollButtonElement.disabled = true;
 betButtonElement.disabled = true;
 comeButtonElement.disabled = true;
@@ -532,7 +570,7 @@ placeDialogAccept.addEventListener('click', () => {
     } else {
         lastPlayerMoney = playerMoney;
         playerMoney -= placeAmount;
-        secondaryBetObj[makePlaceNumClicked] = placeAmount;
+        secondaryBetAdd(makePlaceNumClicked, placeAmount);
         moneyChange(placeAmount);
         placeDialog.close();
     }
