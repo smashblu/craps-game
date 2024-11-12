@@ -88,7 +88,7 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED, null);
-    if (testObjPop(multiBetObj) === false) {
+    if (testObjPop(multiRollBets) === false) {
         multiRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
@@ -117,7 +117,7 @@ function checkGameState() {
 function multiRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
-            if (multiBetObj[i] > 0) {
+            if (multiRollBets[i] > 0) {
                 buildSummary(ALLBETS, i);
                 multiBetDelete(i);
             }
@@ -125,16 +125,16 @@ function multiRoll(roll) {
         buildSummary(MULTILOSE, null);
         payOut(false, false, 0);
     } else {
-        if (multiBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
+        if (multiRollBets[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
             buildSummary(PLACEWIN, null); // This is not being added to summary
-            payOut(false, true, multiBetObj[roll]);
+            payOut(false, true, multiRollBets[roll]);
             multiBetDelete(roll);
         }
     }
-    if (multiBetObj[1] > 0) {
+    if (multiRollBets[1] > 0) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN, null);
-            payOut(false, true, (multiBetObj[1]));
+            payOut(false, true, (multiRollBets[1]));
             multiBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE, null);
@@ -142,7 +142,7 @@ function multiRoll(roll) {
             multiBetDelete(1);
         } else {
             buildSummary(COMESET, null);
-            multiBetAdd(roll, multiBetObj[1]);
+            multiBetAdd(roll, multiRollBets[1]);
             multiBetDelete(1);
         }
     }
@@ -267,11 +267,11 @@ function makePlace(num) {
 }
 
 function pushmultiBets() {
-    if (testObjPop(multiBetObj) === false) {
+    if (testObjPop(multiRollBets) === false) {
         for (let i = 1; i < 11; i++) {
-            if (multiBetObj[i] > 0) {
-                playerMoney += multiBetObj[i];
-                totalBets -= multiBetObj[i];
+            if (multiRollBets[i] > 0) {
+                playerMoney += multiRollBets[i];
+                totalBets -= multiRollBets[i];
                 multiBetDelete(i);
                 buildSummary(ALLBETS, i);
             }
@@ -282,7 +282,7 @@ function pushmultiBets() {
 }
 
 function multiBetAdd(point, amount) {
-    multiBetObj[point] = amount;
+    multiRollBets[point] = amount;
     const divChip = document.createElement('div');
     const txtChip = document.createElement('div');
     const imgChip = document.createElement('img');
@@ -337,7 +337,7 @@ function multiBetAdd(point, amount) {
 }
 
 function multiBetDelete(point) {
-    delete multiBetObj[point];
+    delete multiRollBets[point];
     document.getElementById(`chip-${point}`).remove();
 }
 
@@ -420,7 +420,7 @@ function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
     const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`;
     const PLACEAGAIN = `You have already made a bet on ${numClicked}`;
-    if (multiBetObj[numClicked] > 0) {
+    if (multiRollBets[numClicked] > 0) {
         displayMessage(PLACEAGAIN);
         return;
     }
@@ -449,11 +449,11 @@ async function diceRoll() {
     const dieOne = getRandomInt(1, 7);
     const dieTwo = getRandomInt(1, 7);
     playerRoll = dieOne + dieTwo;
-    firstDieElement.setAttribute('src', `images/dice_animated.gif`);
-    secondDieElement.setAttribute('src', `images/dice_animated.gif`);
+    firstDie.setAttribute('src', `images/dice_animated.gif`);
+    secondDie.setAttribute('src', `images/dice_animated.gif`);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    firstDieElement.setAttribute('src', `images/dice_${dieOne}.png`);
-    secondDieElement.setAttribute('src', `images/dice_${dieTwo}.png`);
+    firstDie.setAttribute('src', `images/dice_${dieOne}.png`);
+    secondDie.setAttribute('src', `images/dice_${dieTwo}.png`);
     showRoll.innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
     rollDisplay.innerHTML = `${playerRoll}`;
     return;
@@ -483,7 +483,7 @@ let totalBets = 0;
 let firstViewed = true;
 let makePlaceNumClicked = 0;
 let rollSummary = null;
-let multiBetObj = {};
+let multiRollBets = {};
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
@@ -530,14 +530,11 @@ const rollDisplay = document.getElementById('roll-display')
 const multiBetsActive = document.getElementById('multi-active');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
-const chipContainerElement = document.querySelector('.chip-container');
-const chipTextElement = document.getElementById('chip-text');
-const chipImgElement = document.getElementById('chip-img');
 const firstScreenFade = new bootstrap.Modal(document.getElementById('gamearea-popup'));
 const clickBoardNumber = document.querySelector('.boardmap');
 const newGameButtons = document.querySelectorAll('.new-game');
-const firstDieElement = document.getElementById('first-die');
-const secondDieElement = document.getElementById('second-die');
+const firstDie = document.getElementById('first-die');
+const secondDie = document.getElementById('second-die');
 const placeDialog = document.querySelector('dialog');
 const placeDialogAmount = document.getElementById('place-amount');
 const placeDialogCancel = document.getElementById('place-cancel');
