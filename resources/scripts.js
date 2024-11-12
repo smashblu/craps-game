@@ -500,7 +500,6 @@ const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
 const LOADGAME = 'Loading not yet implemented';
 const NOACTION = 'No action, roll again';
-const SECONDARYNOACTION = 'No action on point';
 const PRIMARYWIN = 'The point was rolled, you win!';
 const PRIMARYLOSE = '7 was rolled, point and place bets lose';
 const INVALIDBET = 'Please make a valid place bet';
