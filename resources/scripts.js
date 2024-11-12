@@ -17,8 +17,8 @@ function newGame() {
 
 function resetGame() {
     playerRoll = 1;
-    pointOpen = false;
-    buttonPosition(playerRoll);
+    playerPoint = 0;
+    buttonPosition();
     betAmount = 0;
     totalBets = 0;
     buttonStates();
@@ -54,16 +54,16 @@ function buttonStates() {
     betDialogElement.disabled = true;
     betButtonElement.disabled = true;
     comeButtonElement.disabled = true;
-    mutliBetsActive.innerHTML = '';
-    if (pointOpen === true) {
+    secondaryBetsActive.innerHTML = '';
+    if (playerPoint > 1) {
         comeButtonElement.disabled = false;
         betDialogElement.disabled = false;
-        mutliBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
+        secondaryBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
     }
     return;
 }
 
-async function preLineRoll() {
+async function firstRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED, null);
@@ -76,8 +76,7 @@ async function preLineRoll() {
         return;
     }
     playerPoint = playerRoll;
-    pointOpen = true;
-    buttonPosition(playerRoll);
+    buttonPosition();
     buildSummary(SHOWPOINT, null);
     displayMessage(rollSummary);
     rollSummary = null;
@@ -89,8 +88,8 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED, null);
-    if (testObjPop(mutliBetObj) === false) {
-        mutliRoll(playerRoll);
+    if (testObjPop(secondaryBetObj) === false) {
+        secondaryRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
         payOut(true, true, betAmount);
@@ -107,56 +106,55 @@ async function gameRoll() {
     return;
 }
 function checkGameState() {
-    if (pointOpen === false) {
-        preLineRoll();
+    if (playerPoint < 1) {
+        firstRoll();
         return;
     }
     gameRoll();
     return;
 }
 
-function mutliRoll(roll) {
+function secondaryRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
-            if (mutliBetObj[i] > 0) {
+            if (secondaryBetObj[i] > 0) {
                 buildSummary(ALLBETS, i);
-                payOut(false, false, 0);
-                mutliBetDelete(i);
+                secondaryBetDelete(i);
             }
-            buildSummary(MULTILOSE, null);
         }
+        buildSummary(SECONDARYLOSE, null);
+        payOut(false, false, 0);
     } else {
-        if (mutliBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
-            buildSummary(PLACEWIN, null);
-            payOut(false, true, mutliBetObj[roll]);
-            mutliBetDelete(roll);
+        if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
+            buildSummary(PLACEWIN, null); // This is not being added to summary
+            payOut(false, true, secondaryBetObj[roll]);
+            secondaryBetDelete(roll);
         }
     }
-    if (mutliBetObj[1] > 0) {
+    if (secondaryBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN, null);
-            payOut(false, true, (mutliBetObj[1]));
-            mutliBetDelete(1);
+            payOut(false, true, (secondaryBetObj[1]));
+            secondaryBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE, null);
             payOut(false, false, 0);
-            mutliBetDelete(1);
+            secondaryBetDelete(1);
         } else {
             buildSummary(COMESET, null);
-            mutliBetAdd(roll, mutliBetObj[1]);
-            mutliBetDelete(1);
+            secondaryBetAdd(roll, secondaryBetObj[1]);
+            secondaryBetDelete(1);
         }
     }
 }
 
-function buttonPosition(loc) {
-    switch (loc) {
+function buttonPosition() {
+    switch (playerRoll) {
         case 1:
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
             onButton.style.left = `${SIDESPOT}px`;
-            mutliBetsActive.innerHTML = '';
-            pointOpen = false;
+            secondaryBetsActive.innerHTML = '';
             break;
         case 4:
             offButton.style.visibility = 'hidden';
@@ -192,39 +190,43 @@ function buttonPosition(loc) {
     return;
 }
 
-function payOut(isline, win, amount) {
-    if (isline === false) {
+function payOut(isprimary, win, amount) {
+    if (isprimary === false) {
         if (win === true) {
             playerMoney += (amount * 2);
             totalBets -= amount;
-            displayMessage(rollSummary);
-            rollSummary = null;
             return;
         }
         totalBets -= amount;
-        displayMessage(rollSummary);
-        rollSummary = null;
         return;
     }
     if (win === true) {
-        buildSummary(LINEWIN, null);
+        if (playerPoint > 1) {
+            buildSummary(PRIMARYWIN, null);
+        } else {
+            buildSummary(FIRSTWIN, null);
+        }
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
-        pushmutliBets();
+        pushSecondaryBets();
         displayMessage(rollSummary);
         rollSummary = null;
         resetGame();
         moneyChange(0);
         return;
     }
-    buildSummary(LINELOSE, null);
+    if (playerPoint > 1) {
+        buildSummary(PRIMARYLOSE, null);
+    } else {
+        buildSummary(FIRSTLOSE, null);
+    }
     if (playerMoney === 0) {
         gameOver();
         return;
     }
     displayMessage(rollSummary);
     rollSummary = null;
-    buttonPosition(playerRoll);
+    buttonPosition();
     resetGame();
     moneyChange(0);
     return;
@@ -250,7 +252,7 @@ function makeCome() {
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    mutliBetAdd(1, comeAmount);
+    secondaryBetAdd(1, comeAmount);
     moneyChange(comeAmount);
     betDialogElement.disabled = true;
     comeButtonElement.disabled = true;
@@ -264,23 +266,23 @@ function makePlace(num) {
     return;
 }
 
-function pushmutliBets() {
-    if (testObjPop(mutliBetObj) === false) {
+function pushSecondaryBets() {
+    if (testObjPop(secondaryBetObj) === false) {
         for (let i = 1; i < 11; i++) {
-            if (mutliBetObj[i] > 0) {
-                playerMoney += mutliBetObj[i];
-                totalBets -= mutliBetObj[i];
-                mutliBetDelete(i);
+            if (secondaryBetObj[i] > 0) {
+                playerMoney += secondaryBetObj[i];
+                totalBets -= secondaryBetObj[i];
+                secondaryBetDelete(i);
                 buildSummary(ALLBETS, i);
             }
-            buildSummary(MULTIPUSH, null);
         }
+        buildSummary(SECONDARYPUSH, null);
     }
     return;
 }
 
-function mutliBetAdd(point, amount) {
-    mutliBetObj[point] = amount;
+function secondaryBetAdd(point, amount) {
+    secondaryBetObj[point] = amount;
     const divChip = document.createElement('div');
     const txtChip = document.createElement('div');
     const imgChip = document.createElement('img');
@@ -334,15 +336,15 @@ function mutliBetAdd(point, amount) {
     return;
 }
 
-function mutliBetDelete(point) {
-    delete mutliBetObj[point];
+function secondaryBetDelete(point) {
+    delete secondaryBetObj[point];
     document.getElementById(`chip-${point}`).remove();
 }
 
 function gameOver() {
     displayMessage(BANKRUPT);
     playerRoll = 1;
-    buttonPosition(playerRoll);
+    buttonPosition();
     buttonStates();
     return;
 }
@@ -375,13 +377,6 @@ async function moneyChange(newBet) {
 }
 
 function buildSummary(msg, rolled) {
-    // Issues
-    // Win place bet: Says 'no action'
-    // 7 with mutli bets active: No message displays
-    // Craps pre point: Says 'place bets lose'
-    // 7/11 pre point: Says 'point wins'
-    // Come bet 7/11: Says 'no action'
-    // Push mutli bets: Iterates a (blank) message for bets even though amount < 1
     switch (msg) {
         case SHOWPOINT:
             msg += ` ${playerPoint}`;
@@ -389,10 +384,10 @@ function buildSummary(msg, rolled) {
         case DICEROLLED:
             msg += ` ${playerRoll}`;
             break;
-        case PRELINEWIN:
+        case NOPOINTWIN:
             msg += ` ${playerRoll}`;
             break;
-        case PRELINELOSE:
+        case NOPOINTLOSE:
             msg += ` ${playerRoll}`;
             break;
         case PLACEWIN:
@@ -400,6 +395,8 @@ function buildSummary(msg, rolled) {
             break;
         case COMESET:
             msg += ` ${playerRoll}`;
+            break;
+        default:
             break;
     }
     if (rollSummary === null) {
@@ -413,29 +410,22 @@ function buildSummary(msg, rolled) {
 }
 
 function displayMessage(str) {
-    if (rollSummary === null) {
-        document.getElementById('current-message').innerHTML = str;
-    } else if (str === NOACTION) {
-        document.getElementById('current-message').innerHTML = 'no action';
-    } else {
-        document.getElementById('current-message').innerHTML = rollSummary;
-    }
+    document.getElementById('current-message').innerHTML = str;
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(messageTrigger);
     toastBootstrap.show();
-    rollSummary = null;
     return;
 }
 
 function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
-    const PLACEPRELINE = `You cannot place on ${numClicked} because no point is open`;
+    const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`;
     const PLACEAGAIN = `You have already made a bet on ${numClicked}`;
-    if (mutliBetObj[numClicked] > 0) {
+    if (secondaryBetObj[numClicked] > 0) {
         displayMessage(PLACEAGAIN);
         return;
     }
-    if (pointOpen === false) {
-        displayMessage(PLACEPRELINE);
+    if (playerPoint < 1) {
+        displayMessage(PLACENOPOINT);
         return;
     }
     if (numClicked === playerPoint) {
@@ -487,34 +477,36 @@ function getRandomInt(min, max) {
 let playerMoney = 100;
 let lastPlayerMoney = 0;
 let playerRoll = 1;
-let pointOpen = false;
 let playerPoint = 0;
 let betAmount = 0;
 let totalBets = 0;
 let firstViewed = true;
 let makePlaceNumClicked = 0;
 let rollSummary = null;
-let mutliBetObj = {};
+let secondaryBetObj = {};
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
 const LOADGAME = 'Loading not yet implemented';
 const NOACTION = 'No action, roll again';
-const LINEWIN = 'The point was rolled, you win!';
-const LINELOSE = '7 was rolled, point and place bets lose';
+const SECONDARYNOACTION = 'No action on point';
+const PRIMARYWIN = 'The point was rolled, you win!';
+const PRIMARYLOSE = 'point and place bets lose';
+const FIRSTWIN = 'Initial bet wins!';
+const FIRSTLOSE = 'Initial bet loses';
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
 const COMEWIN = 'The last come bet has won!';
 const COMELOSE = 'The last come bet has lost';
-const MULTILOSE = 'have all lost';
-const MULTIPUSH = 'have all pushed';
-const ALLBETS = 'Placeholder message for all multi-roll bets';
+const SECONDARYLOSE = 'have all lost';
+const SECONDARYPUSH = 'have all pushed';
+const ALLBETS = 'Placeholder message for all secondary bets';
 // playerRoll should trail following constants
-const SHOWPOINT = 'Your point is';
+const SHOWPOINT = 'Your point is'; // playerPoint for this one only
 const DICEROLLED = 'You rolled';
-const PRELINEWIN = 'Win on pass line with';
-const PRELINELOSE = 'Craps, you lose with';
+const NOPOINTWIN = 'Win on pass line with';
+const NOPOINTLOSE = 'Craps, you lose with';
 const PLACEWIN = 'Place bet wins on';
 const COMESET = 'The last come bet is placed on';
 
@@ -536,7 +528,7 @@ const betDialogElement = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
 const showRollElement = document.getElementById('show-roll')
 const rollDisplayElement = document.getElementById('roll-display')
-const mutliBetsActive = document.getElementById('mutli-active');
+const secondaryBetsActive = document.getElementById('secondary-active');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const chipContainerElement = document.querySelector('.chip-container');
@@ -555,7 +547,7 @@ const placeDialogAccept = document.getElementById('place-accept');
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-buttonPosition(playerRoll);
+buttonPosition();
 rollButtonElement.disabled = true;
 betButtonElement.disabled = true;
 comeButtonElement.disabled = true;
@@ -578,7 +570,7 @@ placeDialogAccept.addEventListener('click', () => {
     } else {
         lastPlayerMoney = playerMoney;
         playerMoney -= placeAmount;
-        mutliBetAdd(makePlaceNumClicked, placeAmount);
+        secondaryBetAdd(makePlaceNumClicked, placeAmount);
         moneyChange(placeAmount);
         placeDialog.close();
     }
