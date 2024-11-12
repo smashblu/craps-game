@@ -41,29 +41,29 @@ function loadGame() {
 
 function buttonStates() {
     if (betAmount === 0) {
-        rollButtonElement.disabled = true;
-        betDialogElement.disabled = false;
-        betButtonElement.disabled = false;
-        comeButtonElement.disabled = true;
+        rollButton.disabled = true;
+        betDialog.disabled = false;
+        betButton.disabled = false;
+        comeButton.disabled = true;
         return;
     }
-    betDialogElement.setAttribute('max', playerMoney);
+    betDialog.setAttribute('max', playerMoney);
     lastPlayerMoney = playerMoney;
     moneyChange(0);
-    rollButtonElement.disabled = false;
-    betDialogElement.disabled = true;
-    betButtonElement.disabled = true;
-    comeButtonElement.disabled = true;
-    secondaryBetsActive.innerHTML = '';
+    rollButton.disabled = false;
+    betDialog.disabled = true;
+    betButton.disabled = true;
+    comeButton.disabled = true;
+    multiBetsActive.innerHTML = '';
     if (playerPoint > 1) {
-        comeButtonElement.disabled = false;
-        betDialogElement.disabled = false;
-        secondaryBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
+        comeButton.disabled = false;
+        betDialog.disabled = false;
+        multiBetsActive.innerHTML = 'You may now click a number on the board to make a Place bet';
     }
     return;
 }
 
-async function firstRoll() {
+async function preLineRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED, null);
@@ -88,8 +88,8 @@ async function gameRoll() {
     diceRoll();
     await new Promise(resolve => setTimeout(resolve, 1000));
     buildSummary(DICEROLLED, null);
-    if (testObjPop(secondaryBetObj) === false) {
-        secondaryRoll(playerRoll);
+    if (testObjPop(multiBetObj) === false) {
+        multiRoll(playerRoll);
     }
     if (playerRoll === playerPoint) {
         payOut(true, true, betAmount);
@@ -107,43 +107,43 @@ async function gameRoll() {
 }
 function checkGameState() {
     if (playerPoint < 1) {
-        firstRoll();
+        preLineRoll();
         return;
     }
     gameRoll();
     return;
 }
 
-function secondaryRoll(roll) {
+function multiRoll(roll) {
     if (roll === 7) {
         for (let i = 4; i < 11; i++) {
-            if (secondaryBetObj[i] > 0) {
+            if (multiBetObj[i] > 0) {
                 buildSummary(ALLBETS, i);
-                secondaryBetDelete(i);
+                multiBetDelete(i);
             }
         }
-        buildSummary(SECONDARYLOSE, null);
+        buildSummary(MULTILOSE, null);
         payOut(false, false, 0);
     } else {
-        if (secondaryBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
+        if (multiBetObj[roll] > 0 && (roll === 4 || roll === 5 || roll === 6 || roll === 8 || roll === 9 || roll === 10)) {
             buildSummary(PLACEWIN, null); // This is not being added to summary
-            payOut(false, true, secondaryBetObj[roll]);
-            secondaryBetDelete(roll);
+            payOut(false, true, multiBetObj[roll]);
+            multiBetDelete(roll);
         }
     }
-    if (secondaryBetObj[1] > 0) {
+    if (multiBetObj[1] > 0) {
         if (roll === 7 || roll === 11) {
             buildSummary(COMEWIN, null);
-            payOut(false, true, (secondaryBetObj[1]));
-            secondaryBetDelete(1);
+            payOut(false, true, (multiBetObj[1]));
+            multiBetDelete(1);
         } else if (roll === 2 || roll === 3 || roll === 12) {
             buildSummary(COMELOSE, null);
             payOut(false, false, 0);
-            secondaryBetDelete(1);
+            multiBetDelete(1);
         } else {
             buildSummary(COMESET, null);
-            secondaryBetAdd(roll, secondaryBetObj[1]);
-            secondaryBetDelete(1);
+            multiBetAdd(roll, multiBetObj[1]);
+            multiBetDelete(1);
         }
     }
 }
@@ -154,7 +154,7 @@ function buttonPosition() {
             offButton.style.visibility = 'visible';
             onButton.style.visibility = 'hidden';
             onButton.style.left = `${SIDESPOT}px`;
-            secondaryBetsActive.innerHTML = '';
+            multiBetsActive.innerHTML = '';
             break;
         case 4:
             offButton.style.visibility = 'hidden';
@@ -190,8 +190,8 @@ function buttonPosition() {
     return;
 }
 
-function payOut(isprimary, win, amount) {
-    if (isprimary === false) {
+function payOut(isline, win, amount) {
+    if (isline === false) {
         if (win === true) {
             playerMoney += (amount * 2);
             totalBets -= amount;
@@ -202,13 +202,13 @@ function payOut(isprimary, win, amount) {
     }
     if (win === true) {
         if (playerPoint > 1) {
-            buildSummary(PRIMARYWIN, null);
+            buildSummary(LINEWIN, null);
         } else {
-            buildSummary(FIRSTWIN, null);
+            buildSummary(PRELINEWIN, null);
         }
         lastPlayerMoney = playerMoney;
         playerMoney += (amount * 2);
-        pushSecondaryBets();
+        pushmultiBets();
         displayMessage(rollSummary);
         rollSummary = null;
         resetGame();
@@ -216,9 +216,9 @@ function payOut(isprimary, win, amount) {
         return;
     }
     if (playerPoint > 1) {
-        buildSummary(PRIMARYLOSE, null);
+        buildSummary(LINELOSE, null);
     } else {
-        buildSummary(FIRSTLOSE, null);
+        buildSummary(PRELINELOSE, null);
     }
     if (playerMoney === 0) {
         gameOver();
@@ -233,7 +233,7 @@ function payOut(isprimary, win, amount) {
 }
 
 function makeBet() {
-    betAmount = betDialogElement.value;
+    betAmount = betDialog.value;
     betAmount = parseInt(betAmount);
     if (validateBet(betAmount) === false) {
         return;
@@ -246,16 +246,16 @@ function makeBet() {
 }
 
 function makeCome() {
-    const comeAmount = parseInt(betDialogElement.value);
+    const comeAmount = parseInt(betDialog.value);
     if (validateBet(comeAmount) === false) {
         return;
     }
     lastPlayerMoney = playerMoney;
     playerMoney -= comeAmount;
-    secondaryBetAdd(1, comeAmount);
+    multiBetAdd(1, comeAmount);
     moneyChange(comeAmount);
-    betDialogElement.disabled = true;
-    comeButtonElement.disabled = true;
+    betDialog.disabled = true;
+    comeButton.disabled = true;
     return;
 }
 
@@ -266,27 +266,27 @@ function makePlace(num) {
     return;
 }
 
-function pushSecondaryBets() {
-    if (testObjPop(secondaryBetObj) === false) {
+function pushmultiBets() {
+    if (testObjPop(multiBetObj) === false) {
         for (let i = 1; i < 11; i++) {
-            if (secondaryBetObj[i] > 0) {
-                playerMoney += secondaryBetObj[i];
-                totalBets -= secondaryBetObj[i];
-                secondaryBetDelete(i);
+            if (multiBetObj[i] > 0) {
+                playerMoney += multiBetObj[i];
+                totalBets -= multiBetObj[i];
+                multiBetDelete(i);
                 buildSummary(ALLBETS, i);
             }
         }
-        buildSummary(SECONDARYPUSH, null);
+        buildSummary(MULTIPUSH, null);
     }
     return;
 }
 
-function secondaryBetAdd(point, amount) {
-    secondaryBetObj[point] = amount;
+function multiBetAdd(point, amount) {
+    multiBetObj[point] = amount;
     const divChip = document.createElement('div');
     const txtChip = document.createElement('div');
     const imgChip = document.createElement('img');
-    gameBoardElement.appendChild(divChip);
+    insideBoard.appendChild(divChip);
     divChip.appendChild(txtChip);
     divChip.appendChild(imgChip);
     divChip.setAttribute('id', `chip-${point}`);
@@ -336,8 +336,8 @@ function secondaryBetAdd(point, amount) {
     return;
 }
 
-function secondaryBetDelete(point) {
-    delete secondaryBetObj[point];
+function multiBetDelete(point) {
+    delete multiBetObj[point];
     document.getElementById(`chip-${point}`).remove();
 }
 
@@ -351,26 +351,26 @@ function gameOver() {
 
 async function moneyChange(newBet) {
     totalBets += newBet;
-    playerMoneyElement.innerHTML = playerMoney;
-    playerBetElement.innerHTML = totalBets;
+    showMoney.innerHTML = playerMoney;
+    showBet.innerHTML = totalBets;
     if (playerMoney < lastPlayerMoney) {
-        playerMoneyElement.style.transition = 'all 0.5s';
-        playerMoneyElement.style.fontSize = '75%';
-        playerMoneyElement.style.color = '#ff0000';
+        showMoney.style.transition = 'all 0.5s';
+        showMoney.style.fontSize = '75%';
+        showMoney.style.color = '#ff0000';
         await new Promise(resolve => setTimeout(resolve, 500));
-        playerMoneyElement.style.transition = 'all 0.5s';
-        playerMoneyElement.style.fontSize = '120%';
-        playerMoneyElement.style.color = '#00ff00';
+        showMoney.style.transition = 'all 0.5s';
+        showMoney.style.fontSize = '120%';
+        showMoney.style.color = '#00ff00';
         return;
     }
     if (playerMoney > lastPlayerMoney) {
-        playerMoneyElement.style.transition = 'all 0.5s';
-        playerMoneyElement.style.fontSize = '175%';
-        playerMoneyElement.style.color = '#0000ff';
+        showMoney.style.transition = 'all 0.5s';
+        showMoney.style.fontSize = '175%';
+        showMoney.style.color = '#0000ff';
         await new Promise(resolve => setTimeout(resolve, 500));
-        playerMoneyElement.style.transition = 'all 0.5s';
-        playerMoneyElement.style.fontSize = '120%';
-        playerMoneyElement.style.color = '#00ff00';
+        showMoney.style.transition = 'all 0.5s';
+        showMoney.style.fontSize = '120%';
+        showMoney.style.color = '#00ff00';
         return;
     }
     return;
@@ -420,7 +420,7 @@ function boardClick(e) {
     let numClicked = parseInt(e.target.alt);
     const PLACENOPOINT = `You cannot place on ${numClicked} because no point is open`;
     const PLACEAGAIN = `You have already made a bet on ${numClicked}`;
-    if (secondaryBetObj[numClicked] > 0) {
+    if (multiBetObj[numClicked] > 0) {
         displayMessage(PLACEAGAIN);
         return;
     }
@@ -454,8 +454,8 @@ async function diceRoll() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     firstDieElement.setAttribute('src', `images/dice_${dieOne}.png`);
     secondDieElement.setAttribute('src', `images/dice_${dieTwo}.png`);
-    showRollElement.innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
-    rollDisplayElement.innerHTML = `${playerRoll}`;
+    showRoll.innerHTML = `${dieOne} + ${dieTwo} = ${playerRoll}`;
+    rollDisplay.innerHTML = `${playerRoll}`;
     return;
 }
 
@@ -483,25 +483,24 @@ let totalBets = 0;
 let firstViewed = true;
 let makePlaceNumClicked = 0;
 let rollSummary = null;
-let secondaryBetObj = {};
+let multiBetObj = {};
 
 const NEWGAME = 'New game started';
 const SAVEGAME = 'Saving not yet implemented';
 const LOADGAME = 'Loading not yet implemented';
 const NOACTION = 'No action, roll again';
-const SECONDARYNOACTION = 'No action on point';
-const PRIMARYWIN = 'The point was rolled, you win!';
-const PRIMARYLOSE = 'point and place bets lose';
-const FIRSTWIN = 'Initial bet wins!';
-const FIRSTLOSE = 'Initial bet loses';
+const LINEWIN = 'The point was rolled, you win!';
+const LINELOSE = 'point and place bets lose';
+const PRELINEWIN = 'Initial bet wins!';
+const PRELINELOSE = 'Initial bet loses';
 const INVALIDBET = 'Please make a valid place bet';
 const BANKRUPT = `You are bankrupt! Please choose 'New Game' from the menu to play again`;
 const PLACEONPOINT = 'You cannot place on the current point';
 const COMEWIN = 'The last come bet has won!';
 const COMELOSE = 'The last come bet has lost';
-const SECONDARYLOSE = 'have all lost';
-const SECONDARYPUSH = 'have all pushed';
-const ALLBETS = 'Placeholder message for all secondary bets';
+const MULTILOSE = 'have all lost';
+const MULTIPUSH = 'have all pushed';
+const ALLBETS = 'Placeholder message for all multi bets';
 // playerRoll should trail following constants
 const SHOWPOINT = 'Your point is'; // playerPoint for this one only
 const DICEROLLED = 'You rolled';
@@ -518,17 +517,17 @@ const EIGHTSPOT = 775;
 const NINESPOT = 1005;
 const TENSPOT = 1235;
 
-const gameBoardElement = document.getElementById('gameboard');
-const playerMoneyElement = document.getElementById('player-money');
-const playerBetElement = document.getElementById('player-bet');
-const betButtonElement = document.getElementById('bet-button');
-const comeButtonElement = document.getElementById('come-button');
-const rollButtonElement = document.getElementById('roll-button');
-const betDialogElement = document.getElementById('bet-amount');
+const insideBoard = document.getElementById('gameboard');
+const showMoney = document.getElementById('player-money');
+const showBet = document.getElementById('player-bet');
+const betButton = document.getElementById('bet-button');
+const comeButton = document.getElementById('come-button');
+const rollButton = document.getElementById('roll-button');
+const betDialog = document.getElementById('bet-amount');
 const messageTrigger = document.getElementById('game-message');
-const showRollElement = document.getElementById('show-roll')
-const rollDisplayElement = document.getElementById('roll-display')
-const secondaryBetsActive = document.getElementById('secondary-active');
+const showRoll = document.getElementById('show-roll')
+const rollDisplay = document.getElementById('roll-display')
+const multiBetsActive = document.getElementById('multi-active');
 const onButton = document.getElementById('on-button');
 const offButton = document.getElementById('off-button');
 const chipContainerElement = document.querySelector('.chip-container');
@@ -548,16 +547,16 @@ const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]
 let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 buttonPosition();
-rollButtonElement.disabled = true;
-betButtonElement.disabled = true;
-comeButtonElement.disabled = true;
+rollButton.disabled = true;
+betButton.disabled = true;
+comeButton.disabled = true;
 
 document.querySelector('#load-game').addEventListener('click', loadGame);
 document.querySelector('#save-game').addEventListener('click', saveGame);
-rollButtonElement.addEventListener('click', checkGameState);
-betButtonElement.addEventListener('click', makeBet);
+rollButton.addEventListener('click', checkGameState);
+betButton.addEventListener('click', makeBet);
 clickBoardNumber.addEventListener('click', boardClick);
-comeButtonElement.addEventListener('click', makeCome);
+comeButton.addEventListener('click', makeCome);
 placeDialogCancel.addEventListener('click', () => {
     placeDialog.close()
 });
@@ -570,7 +569,7 @@ placeDialogAccept.addEventListener('click', () => {
     } else {
         lastPlayerMoney = playerMoney;
         playerMoney -= placeAmount;
-        secondaryBetAdd(makePlaceNumClicked, placeAmount);
+        multiBetAdd(makePlaceNumClicked, placeAmount);
         moneyChange(placeAmount);
         placeDialog.close();
     }
