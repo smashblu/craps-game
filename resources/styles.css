@@ -148,3 +148,10 @@ body {
     padding-left: 5%;
     padding-bottom: 200px;
 }
+
+rect.btn {
+    stroke: #fff;
+    fill: #fff;
+    fill-opacity: 0;
+    stroke-opacity: 0;
+}
