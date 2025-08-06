@@ -235,7 +235,7 @@ function payOut(isline, win, amount) {
 function makeBet() {
     betAmount = betDialog.value;
     betAmount = parseInt(betAmount);
-    if (validateBet(betAmount) === false) {
+    if (!validateBet(betAmount)) {
         return;
     }
     lastPlayerMoney = playerMoney;
@@ -247,7 +247,7 @@ function makeBet() {
 
 function makeCome() {
     const comeAmount = parseInt(betDialog.value);
-    if (validateBet(comeAmount) === false) {
+    if (!validateBet(comeAmount)) {
         return;
     }
     lastPlayerMoney = playerMoney;
@@ -560,7 +560,7 @@ placeDialogCancel.addEventListener('click', () => {
 placeDialogAccept.addEventListener('click', () => {
     let placeAmount = placeDialogAmount.value;
     placeAmount = parseInt(placeAmount);
-    if (validateBet(placeAmount) === false) {
+    if (!validateBet(placeAmount)) {
         placeDialog.close();
         displayMessage(INVALIDBET);
     } else {
